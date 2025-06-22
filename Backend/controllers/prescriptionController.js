@@ -6,7 +6,7 @@ exports.uploadPrescription = async (req, res) => {
   const extractedMedicines = await extractMedicinesFromImage(fileUrl);
 
   const prescription = await Prescription.create({
-    user: req.user.id,
+    user: req.user.uid,
     fileUrl,
     extractedMedicines
   });
@@ -15,6 +15,6 @@ exports.uploadPrescription = async (req, res) => {
 };
 
 exports.getUserPrescriptions = async (req, res) => {
-  const prescriptions = await Prescription.find({ user: req.user.id });
+  const prescriptions = await Prescription.find({ user: req.user.uid });
   res.json(prescriptions);
 };

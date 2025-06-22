@@ -2,12 +2,12 @@ const Medicine = require('../models/Medicine');
 const Prescription = require('../models/Prescription');
 
 exports.extractMedicines = async (req, res) => {
-  const prescriptions = await Prescription.find({ user: req.user.id });
+  const prescriptions = await Prescription.find({ user: req.user.uid });
   const medicinesMap = new Map();
 
   prescriptions.forEach(pres => {
     pres.extractedMedicines.forEach(med => {
-      const key = `${req.user.id}_${med.name}`;
+      const key = `${req.user.uid}_${med.name}`;
       if (!medicinesMap.has(key)) {
         medicinesMap.set(key, []);
       }

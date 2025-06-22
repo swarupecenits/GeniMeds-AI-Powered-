@@ -1,14 +1,19 @@
-const jwt = require('jsonwebtoken');
+// middleware/authMiddleware.js
+const admin = require('../config/firebaseAdmin'); // Corrected path
 
-exports.auth = (req, res, next) => {
+exports.auth = async (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).json({ message: 'No token provided' });
+
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided' });
+  }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    req.user = decodedToken; // You can access decoded user details like uid, email, etc.
     next();
   } catch (err) {
-    return res.status(403).json({ message: 'Invalid token' });
+    console.error("Firebase token verification failed:", err);
+    return res.status(403).json({ message: 'Invalid Firebase token' });
   }
 };

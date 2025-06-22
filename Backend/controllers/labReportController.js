@@ -5,7 +5,7 @@ exports.uploadLabReport = async (req, res) => {
   const fileUrl = req.file.path;
   const results = await extractLabValues(fileUrl);
   const report = await LabReport.create({
-    user: req.user.id,
+    user: req.user.uid,
     fileUrl,
     results
   });
