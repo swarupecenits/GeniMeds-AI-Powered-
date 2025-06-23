@@ -33,6 +33,11 @@ const Home = () => {
     scrollToBottom();
   }, [messages]);
 
+
+  useEffect(() => {
+    console.log('Messages state changed:', messages);
+  }, [messages]);
+
   
   useEffect(() => {
     console.log('uploadedFiles state changed:', uploadedFiles);
@@ -68,6 +73,10 @@ const Home = () => {
   const handleSendMessage = async () => {
     if (isSendDisabled()) return;
 
+    console.log('Starting handleSendMessage...');
+    console.log('Input message:', inputMessage);
+    console.log('Uploaded files:', uploadedFiles);
+
     const newMessage = {
       id: Date.now(),
       type: 'user',
@@ -80,7 +89,13 @@ const Home = () => {
       files: uploadedFiles.length > 0 ? uploadedFiles : undefined
     };
 
-    setMessages(prev => [...prev, newMessage]);
+    console.log('Adding user message:', newMessage);
+    setMessages(prev => {
+      console.log('Previous messages:', prev);
+      const newMessages = [...prev, newMessage];
+      console.log('New messages array:', newMessages);
+      return newMessages;
+    });
     setInputMessage('');
     setIsLoading(true);
 
@@ -88,7 +103,7 @@ const Home = () => {
       let response;
       
       if (uploadedFiles.length > 0) {
-       
+        console.log('Processing uploaded files...');
         const formData = new FormData();
         formData.append('document', uploadedFiles[0]); 
         const fileResponse = await fetch('http://localhost:5000/api/analyze/file', {  //This endpoint doesn't work yet, will continue working on this tomorrow
@@ -99,18 +114,23 @@ const Home = () => {
           body: formData
         });
 
+        console.log('File response status:', fileResponse.status);
+        console.log('File response ok:', fileResponse.ok);
+
         if (!fileResponse.ok) {
           const errorData = await fileResponse.json().catch(() => ({}));
+          console.log('File response error:', errorData);
           throw new Error(errorData.error || `File processing failed: ${fileResponse.status}`);
         }
 
         const fileData = await fileResponse.json();
+        console.log('File data received:', fileData);
         
         if (!fileData.success || !fileData.analysis) {
           throw new Error('No text could be extracted from the uploaded files');
         }
 
-        
+        console.log('Sending extracted text for analysis...');
         response = await fetch('http://localhost:5000/api/analyze/text', {
           method: 'POST',
           headers: {
@@ -122,10 +142,9 @@ const Home = () => {
           })
         });
         
-        
         setUploadedFiles([]);
       } else {
-       
+        console.log('Sending text message to backend...');
         response = await fetch('http://localhost:5000/api/analyze/text', {
           method: 'POST',
           headers: {
@@ -138,14 +157,18 @@ const Home = () => {
         });
       }
     
+      console.log('Main response status:', response.status);
+      console.log('Main response ok:', response.ok);
+    
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+        console.log('Response error data:', errorData);
         throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
     
       const data = await response.json();
+      console.log('Response data received:', data);
     
-      
       const aiResponse = {
         id: Date.now() + 1,
         type: 'ai',
@@ -156,7 +179,14 @@ const Home = () => {
           hour12: true 
         })
       };
-      setMessages(prev => [...prev, aiResponse]);
+      
+      console.log('Adding AI response:', aiResponse);
+      setMessages(prev => {
+        console.log('Previous messages before AI response:', prev);
+        const newMessages = [...prev, aiResponse];
+        console.log('New messages array with AI response:', newMessages);
+        return newMessages;
+      });
     } catch (error) {
       console.error('Error calling backend API:', error);
       
@@ -170,7 +200,14 @@ const Home = () => {
           hour12: true 
         })
       };
-      setMessages(prev => [...prev, errorResponse]);
+      
+      console.log('Adding error response:', errorResponse);
+      setMessages(prev => {
+        console.log('Previous messages before error response:', prev);
+        const newMessages = [...prev, errorResponse];
+        console.log('New messages array with error response:', newMessages);
+        return newMessages;
+      });
     } finally {
       setIsLoading(false);
     }

@@ -111,7 +111,7 @@ const MarkdownRenderer = ({ content, className = '' }) => {
           ),
         }}
       >
-        
+        {content}
       </ReactMarkdown>
     </div>
   );
