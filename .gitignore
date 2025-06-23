@@ -1,0 +1,57 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+.env
+.env.local
+.env.*.local
+
+
+azureauth.json
+*.azureauth
+
+# Build output (if used)
+dist/
+build/
+
+# Logs
+logs/
+*.log
+
+# File uploads
+uploads/
+tmp/
+*.tmp
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# VSCode and IDEs
+.vscode/
+.idea/
+*.sw?
+
+
+
+package-lock.json
+yarn.lock
+
+# OS Trash
+.Trashes
+.Spotlight-V100
+.fseventsd
+
+# Misc
+*.bak
+*.orig
+*.rej
+*.swo
+*.swn
+._*
