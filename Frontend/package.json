@@ -10,15 +10,23 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.1.1",
+    "@shadcn/ui": "^0.0.4",
     "@tailwindcss/vite": "^4.1.10",
     "firebase": "^11.9.1",
     "multer": "^2.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+<<<<<<< HEAD:package.json
+    "react-hook-form": "^7.58.1",
+    "react-router-dom": "^7.6.2",
+    "zod": "^3.25.67"
+=======
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.6.2",
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1"
+>>>>>>> 8a0f0ef187001ba653ac5a0acbf15178b8ce9a94:Frontend/package.json
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
