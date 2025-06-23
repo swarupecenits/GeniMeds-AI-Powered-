@@ -91,7 +91,7 @@ const Home = () => {
        
         const formData = new FormData();
         formData.append('document', uploadedFiles[0]); 
-        const fileResponse = await fetch('http://localhost:5001/api/analyze/file', {  //This endpoint doesn't work yet, will continue working on this tomorrow
+        const fileResponse = await fetch('http://localhost:5000/api/analyze/file', {  //This endpoint doesn't work yet, will continue working on this tomorrow
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -111,7 +111,7 @@ const Home = () => {
         }
 
         
-        response = await fetch('http://localhost:5001/api/analyze/text', {
+        response = await fetch('http://localhost:5000/api/analyze/text', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -126,7 +126,7 @@ const Home = () => {
         setUploadedFiles([]);
       } else {
        
-        response = await fetch('http://localhost:5001/api/analyze/text', {
+        response = await fetch('http://localhost:5000/api/analyze/text', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
