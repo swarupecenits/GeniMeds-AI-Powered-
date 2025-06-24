@@ -57,6 +57,15 @@ function Navbar() {
           </li>
           <li className="md:inline-block">
             <Link
+              to="/contact"
+              className="block text-white font-medium text-center text-lg hover:text-teal-200 transition-colors duration-300 px-4 py-6 md:px-0 md:py-0"
+              onClick={() => setIsOpen(false)}
+            >
+              Contact
+            </Link>
+          </li>
+          <li className="md:inline-block">
+            <Link
               to="/profile"
               className="block text-white font-medium text-center text-lg hover:text-teal-200 transition-colors duration-300 px-4 py-6 md:px-0 md:py-0"
               onClick={() => setIsOpen(false)}

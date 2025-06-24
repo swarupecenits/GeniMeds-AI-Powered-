@@ -6,6 +6,8 @@ import About from './pages/About';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import AiChat from './pages/AiChat';
+import Contact from './pages/Contact';
+
 function App() {
   return (
     <Router>
@@ -15,6 +17,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/chat" element={<AiChat />} />
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/register" element={<RegisterForm />} />
 
         </Routes>
