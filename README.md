@@ -66,10 +66,10 @@ The platform is built to be **scalable**, **secure**, and **easy to integrate** 
 
 ### Prerequisites
 
-- Python 3.8+  
-- Docker (optional, for containerized deployment)  
+- Node JS
+- Vite
 - Git  
-- Required Python packages (in `requirements.txt`)  
+- React
 
 ### Steps
 
@@ -79,18 +79,12 @@ The platform is built to be **scalable**, **secure**, and **easy to integrate** 
    cd GeniMeds-AI-Powered
    ```
 
-2. **Set Up a Virtual Environment**
+2. **Install the dependencies (Using npm)**
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # Windows: venv\Scripts\activate
+   npm install
    ```
 
-3. **Install Dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Set Up Environment Variables**  
+3. **Set Up Environment Variables**  
    Create a `.env` file in the root and add:
    ```env
    AZURE_OPENAI_API_KEY=your_api_key
@@ -98,10 +92,9 @@ The platform is built to be **scalable**, **secure**, and **easy to integrate** 
    DATABASE_URL=your_database_url
    ```
 
-5. **(Optional) Docker Setup**
+4. **Run the application**
    ```bash
-   docker build -t genimeds-ai .
-   docker run -p 8000:8000 --env-file .env genimeds-ai
+   npm start
    ```
 
 ---
@@ -110,9 +103,9 @@ The platform is built to be **scalable**, **secure**, and **easy to integrate** 
 
 ### Run the Application Locally
 ```bash
-uvicorn app.main:app --host 0.0.0.0 --port 8000
+npm run dev
 ```
-Access at: [http://localhost:8000](http://localhost:8000)
+Access at: [http://localhost:5173](http://localhost:5173)
 
 ### Example API Endpoints
 
@@ -130,31 +123,34 @@ Access at: [http://localhost:8000](http://localhost:8000)
     -d '{"data": "Lab results..."}'
   ```
 
-### Interactive UI (If available)
-
-```bash
-streamlit run app/ui.py
-```
-
-Access UI at: [http://localhost:8501](http://localhost:8501)
-
 ---
 
 ## Project Structure
 
 ```
-GeniMeds-AI-Powered/
-├── app/                    # Core application code
-│   ├── main.py             # FastAPI entry point
-│   ├── models/             # Machine learning model definitions
-│   ├── utils/              # Utility functions (e.g., preprocessing)
-│   └── ui.py               # Streamlit/Gradio UI (if applicable)
-├── tests/                  # Unit and integration tests
-├── requirements.txt        # Python dependencies
-├── Dockerfile              # Docker configuration
-├── .env.example            # Example environment variables
-├── README.md               # This file
-└── LICENSE                 # License file
+genimeds-ai/
+├── Backend/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── services/
+│   ├── uploads/
+│   ├── .env
+│   ├── app.js
+│   ├── server.js
+│   └── package.json
+└── Frontend/
+    ├── public/
+    ├── src/
+    │   ├── assets/
+    │   ├── components/
+    │   ├── firebase/
+    │   └── pages/
+    ├── index.html
+    ├── package.json
+    └── vite.config.js
 ```
 
 ---
@@ -180,21 +176,14 @@ We welcome contributions to enhance **GeniMeds-AI-Powered**!
    ```
 5. Open a pull request with a detailed description
 
-✅ Please ensure your code passes tests and follows formatting (`pytest`, `black`, etc.)
-
----
-
-## License
-
-This project is licensed under the **MIT License**.  
-See the [LICENSE](./LICENSE) file for details.
+✅ Please ensure your code passes tests and follows formatting.
 
 ---
 
 ## Contact
 
 📬 **Maintainer**: [swarupecenits](https://github.com/swarupecenits)  
-📧 **Email**: *Add your preferred email/contact here*
+📧 **Email**: *swarupchanda1963@gmail.com*
 
 ---
 
