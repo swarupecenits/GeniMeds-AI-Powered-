@@ -15,15 +15,18 @@
     "@material-tailwind/react": "^2.1.10",
     "@shadcn/ui": "^0.0.4",
     "@tailwindcss/vite": "^4.1.10",
+    "clsx": "^2.1.1",
     "firebase": "^11.9.1",
     "framer-motion": "^12.19.1",
+    "motion": "^12.19.1",
     "multer": "^2.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.6.2",
     "rehype-highlight": "^7.0.2",
-    "remark-gfm": "^4.0.1"
+    "remark-gfm": "^4.0.1",
+    "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
