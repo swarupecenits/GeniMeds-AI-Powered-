@@ -1,4 +1,4 @@
-# GENIMEDS-AI-POWERED-
+# GENIMEDS-AI-POWERED
 
 *Transforming Healthcare with Intelligent, Seamless Solutions*
 
