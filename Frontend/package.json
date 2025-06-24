@@ -10,7 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^5.1.1",
+    "@material-tailwind/react": "^2.1.10",
     "@shadcn/ui": "^0.0.4",
     "@tailwindcss/vite": "^4.1.10",
     "firebase": "^11.9.1",
