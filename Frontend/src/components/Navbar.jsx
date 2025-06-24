@@ -9,7 +9,7 @@ function Navbar() {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-teal-500 to-blue-600 shadow-lg p-4 sticky top-0 z-50">
+    <nav className="bg-gradient-to-r from-teal-500 to-blue-600 shadow-lg p-5 lg:pl-36 lg:pr-36 sticky top-0 z-50">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo/Brand */}
         <div className="flex items-center space-x-2">
@@ -34,7 +34,7 @@ function Navbar() {
 
         {/* Navigation Links */}
         <ul
-          className={`md:flex md:space-x-8 ${isOpen ? 'block' : 'hidden'} md:block absolute md:static top-16 left-0 w-full md:w-auto transition-all duration-300 ease-in-out
+          className={`md:flex md:space-x-20 ${isOpen ? 'block' : 'hidden'} md:block absolute md:static top-16 left-0 w-full md:w-auto transition-all duration-300 ease-in-out
             ${isOpen ? 'bg-gradient-to-r from-teal-600 to-blue-700 animate-slideDown' : 'bg-transparent'}`}
         >
           <li className="md:inline-block">
@@ -53,6 +53,15 @@ function Navbar() {
               onClick={() => setIsOpen(false)}
             >
               About
+            </Link>
+          </li>
+          <li className="md:inline-block">
+            <Link
+              to="/contact"
+              className="block text-white font-medium text-center text-lg hover:text-teal-200 transition-colors duration-300 px-4 py-6 md:px-0 md:py-0"
+              onClick={() => setIsOpen(false)}
+            >
+              Contact
             </Link>
           </li>
           <li className="md:inline-block">

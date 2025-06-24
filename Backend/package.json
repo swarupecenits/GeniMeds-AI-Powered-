@@ -11,17 +11,18 @@
   "dependencies": {
     "@azure/openai": "^2.0.0",
     "axios": "^1.10.0",
-    "bcrypt": "^5.1.0",
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.19.2",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
     "firebase-admin": "^13.4.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.3.3",
-    "multer": "^1.4.5-lts.1",
-    "openai": "^5.6.0"
+    "mongoose": "^8.16.0",
+    "multer": "^2.0.1",
+    "openai": "^5.7.0",
+    "whatwg-url": "^14.2.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
