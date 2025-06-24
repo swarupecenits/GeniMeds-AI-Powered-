@@ -2,9 +2,9 @@
 
 *Transforming Healthcare with Intelligent, Seamless Solutions*
 
-![Last Commit](https://img.shields.io/github/last-commit/your-username/genimeds-ai?color=blue&label=last%20commit)
+![Last Commit](https://img.shields.io/github/last-commit/swarupecenits/GeniMeds-AI-Powered-?color=blue&label=last%20commit)
 ![JavaScript](https://img.shields.io/badge/javascript-98.7%25-blue)
-![Languages](https://img.shields.io/github/languages/count/your-username/genimeds-ai)
+![Languages](https://img.shields.io/github/languages/count/swarupecenits/GeniMeds-AI-Powered-)
 
 ---
 
