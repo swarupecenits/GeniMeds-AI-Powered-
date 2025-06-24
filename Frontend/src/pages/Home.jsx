@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import GenimedsHeader from '../components/GenimedsHeader';
 
 const Home = () => {
     return (
@@ -8,7 +9,7 @@ const Home = () => {
                     <div class="relative px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
                         <div class="max-w-3xl mx-auto text-center">
                             <p class="inline-flex px-4 py-2 text-base text-gray-900 border border-gray-200 rounded-full font-pj">Made by Developers, for Healthcare</p>
-                            <h1 class="mt-5 text-4xl font-bold leading-tight text-gray-900 sm:text-5xl sm:leading-tight lg:text-6xl lg:leading-tight font-pj">Genimeds Ai- Healthcare Platform</h1>
+                            <GenimedsHeader/>
                             <p class="max-w-md mx-auto mt-6 text-base leading-7 text-gray-600 font-inter">Empowering users with affordable healthcare through AI-driven prescription analysis, medicine insights, and proactive wellness support..</p>
 
                             <div class="relative inline-flex mt-10 group">
