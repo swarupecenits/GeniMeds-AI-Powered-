@@ -370,7 +370,7 @@ const AiChat = () => {
         )}
 
         {/* Input area */}
-        <div className="p-4 backdrop-blur-md bg-white/30 border-t border-white/20">
+        <div className="fixed bottom-0 left-0 w-full z-50 p-4 backdrop-blur-md bg-white/30 border-t border-white/20 max-w-4xl mx-auto" style={{right: 0}}>
           <div className="flex items-end space-x-3">
             {/* File upload button */}
             <button
