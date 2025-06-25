@@ -3,7 +3,7 @@ import { SlideUp } from "../utility/animation";
 
 const Trust = () => {
   return (
-    <section className="bg-brandWhite py-16 mt-20">
+    <section className="bg-gray-50 py-16 pt-48 sm:pt-32 lg:pt-0">
       <div className="container p-6">
         <motion.h1
           variants={SlideUp(0.2)}
