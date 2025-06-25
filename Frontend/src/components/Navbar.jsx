@@ -1,12 +1,42 @@
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase/firebase';
+import defaultUserImg from '../assets/img11.png';
+
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+  const dropdownRef = useRef();
 
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) setUser(JSON.parse(storedUser));
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    window.dispatchEvent(new Event('user-updated'));
+    navigate('/login');
+  };
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
 
   return (
     <>
@@ -92,6 +122,43 @@ function Navbar() {
                 Profile
               </Link>
             </li>
+    <li className="relative md:inline-block" ref={dropdownRef}>
+      {user ? (
+        <div className="group relative inline-block">
+          <button className="focus:outline-none" onClick={() => setDropdownOpen(!dropdownOpen)}>
+            <img
+              src={user.photoURL || 'https://www.gstatic.com/images/branding/product/1x/avatar_circle_blue_512dp.png'}
+              alt="Profile"
+              className="w-8 h-8 rounded-full object-cover border-2 border-white"
+            />
+          </button>
+
+          {dropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 py-2 border">
+              <div className="px-4 py-2 text-sm text-gray-800 font-semibold">{user.displayName}</div>
+              <div className="px-4 text-sm text-gray-500">{user.email}</div>
+              <hr className="my-2" />
+              <button
+                className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <Link to="/login" className="block px-4 py-6 md:px-0 md:py-0">
+          <img
+            src={defaultUserImg}
+            alt="Login"
+            className="w-8 h-8 rounded-full object-cover border-2 border-white"
+          />
+        </Link>
+      )}
+    </li>
+
+
           </ul>
         </div>
 
