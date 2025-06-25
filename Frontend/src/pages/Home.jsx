@@ -7,7 +7,7 @@ const Home = () => {
     return (
         <>
             <BackgroundLines className="bg-gray-50 ">
-                <div className="relative py-12 sm:py-16 lg:pt-20 pb-32">
+                <div className="relative py-12 sm:py-16 lg:pt-20 pb-32 overflow-x-hidden">
                     <div className="relative px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
                         <div className="max-w-3xl mx-auto text-center">
                             <p className="inline-flex px-4 py-2 text-base text-gray-900 border border-gray-200 rounded-full font-pj">Made by Developers, for Healthcare</p>
