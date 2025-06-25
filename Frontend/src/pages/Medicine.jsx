@@ -36,10 +36,22 @@ const Medicine = () => {
     const [totalProducts, setTotalProducts] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredProducts, setFilteredProducts] = useState(0);
+    const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+    const [jumpToPage, setJumpToPage] = useState('');
     const navigate = useNavigate();
     
     const itemsPerPage = 12; // Show 12 products per page
     const totalPages = Math.ceil((searchTerm ? filteredProducts : totalProducts) / itemsPerPage);
+
+    // Handle window resize for responsive pagination
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         setLoading(true);
@@ -95,35 +107,44 @@ const Medicine = () => {
         setCurrentPage(1); // Reset to first page when searching
     };
 
+    const handleJumpToPage = (e) => {
+        e.preventDefault();
+        const pageNum = parseInt(jumpToPage);
+        if (pageNum >= 1 && pageNum <= totalPages) {
+            handlePageChange(pageNum);
+            setJumpToPage('');
+        }
+    };
+
     const currentTotal = searchTerm ? filteredProducts : totalProducts;
 
     const generatePageNumbers = () => {
         const pages = [];
-        const maxVisiblePages = 5;
+        const maxVisiblePages = windowWidth < 768 ? 3 : 5; // Show fewer pages on mobile
         
         if (totalPages <= maxVisiblePages) {
             for (let i = 1; i <= totalPages; i++) {
                 pages.push(i);
             }
         } else {
-            if (currentPage <= 3) {
-                for (let i = 1; i <= 4; i++) {
+            if (currentPage <= 2) {
+                for (let i = 1; i <= Math.min(maxVisiblePages - 1, totalPages); i++) {
                     pages.push(i);
                 }
-                pages.push('...');
-                pages.push(totalPages);
-            } else if (currentPage >= totalPages - 2) {
+                if (totalPages > maxVisiblePages - 1) {
+                    pages.push('...');
+                    pages.push(totalPages);
+                }
+            } else if (currentPage >= totalPages - 1) {
                 pages.push(1);
                 pages.push('...');
-                for (let i = totalPages - 3; i <= totalPages; i++) {
+                for (let i = Math.max(totalPages - (maxVisiblePages - 2), 1); i <= totalPages; i++) {
                     pages.push(i);
                 }
             } else {
                 pages.push(1);
                 pages.push('...');
-                for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-                    pages.push(i);
-                }
+                pages.push(currentPage);
                 pages.push('...');
                 pages.push(totalPages);
             }
@@ -137,14 +158,14 @@ const Medicine = () => {
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-800 lg:-mt-7 pb-4">Generic Products</h1>
                 
                 {/* Search Bar */}
-                <div className="max-w-md mx-auto mb-6">
+                <div className="max-w-lg mx-auto mb-6 px-4 sm:px-0">
                     <div className="relative">
                         <input
                             type="text"
                             placeholder="Search medicines, compositions, or manufacturers..."
                             value={searchTerm}
                             onChange={handleSearchChange}
-                            className="w-full px-4 py-3 pl-10 pr-4 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                            className="w-full px-4 py-3 pl-10 pr-4 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm sm:text-base"
                         />
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                             <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -206,55 +227,86 @@ const Medicine = () => {
                     </div>
 
                     {/* Pagination */}
-                    <div className="flex justify-center items-center mt-12 space-x-2">
-                        {/* Previous Button */}
-                        <button
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            className={`px-4 py-2 rounded-lg font-medium transition ${
-                                currentPage === 1
-                                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                                    : 'bg-blue-600 text-white hover:bg-blue-700'
-                            }`}
-                        >
-                            Previous
-                        </button>
+                    <div className="flex flex-col sm:flex-row justify-center items-center mt-12 space-y-4 sm:space-y-0 sm:space-x-2">
+                        {/* Mobile: Show page info at top */}
+                        <div className="sm:hidden text-center text-gray-600 mb-4">
+                            <span>Page {currentPage} of {totalPages.toLocaleString()}</span>
+                        </div>
 
-                        {/* Page Numbers */}
-                        {generatePageNumbers().map((page, index) => (
+                        <div className="flex items-center space-x-1 overflow-x-auto pb-2 sm:pb-0 max-w-full">
+                            {/* Previous Button */}
                             <button
-                                key={index}
-                                onClick={() => typeof page === 'number' && handlePageChange(page)}
-                                disabled={page === '...'}
-                                className={`px-4 py-2 rounded-lg font-medium transition ${
-                                    page === currentPage
-                                        ? 'bg-blue-600 text-white'
-                                        : page === '...'
-                                        ? 'bg-transparent text-gray-500 cursor-default'
-                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-medium transition text-sm sm:text-base flex-shrink-0 ${
+                                    currentPage === 1
+                                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                        : 'bg-blue-600 text-white hover:bg-blue-700'
                                 }`}
                             >
-                                {page}
+                                <span className="hidden sm:inline">Previous</span>
+                                <span className="sm:hidden">‹</span>
                             </button>
-                        ))}
 
-                        {/* Next Button */}
-                        <button
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                            className={`px-4 py-2 rounded-lg font-medium transition ${
-                                currentPage === totalPages
-                                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                                    : 'bg-blue-600 text-white hover:bg-blue-700'
-                            }`}
-                        >
-                            Next
-                        </button>
+                            {/* Page Numbers */}
+                            <div className="flex items-center space-x-1 min-w-0 flex-shrink-0">
+                                {generatePageNumbers().map((page, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => typeof page === 'number' && handlePageChange(page)}
+                                        disabled={page === '...'}
+                                        className={`px-2 py-2 sm:px-3 sm:py-2 rounded-lg font-medium transition text-sm sm:text-base flex-shrink-0 min-w-[32px] sm:min-w-[40px] ${
+                                            page === currentPage
+                                                ? 'bg-blue-600 text-white'
+                                                : page === '...'
+                                                ? 'bg-transparent text-gray-500 cursor-default'
+                                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                        }`}
+                                    >
+                                        {page}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {/* Next Button */}
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-medium transition text-sm sm:text-base flex-shrink-0 ${
+                                    currentPage === totalPages
+                                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                        : 'bg-blue-600 text-white hover:bg-blue-700'
+                                }`}
+                            >
+                                <span className="hidden sm:inline">Next</span>
+                                <span className="sm:hidden">›</span>
+                            </button>
+                        </div>
                     </div>
 
-                    {/* Page Info */}
-                    <div className="text-center mt-6 text-gray-600">
+                    {/* Desktop: Page Info with Jump to Page */}
+                    <div className="hidden sm:flex justify-center items-center mt-6 space-x-4 text-gray-600">
                         <span>Page {currentPage} of {totalPages.toLocaleString()}</span>
+                        <div className="flex items-center space-x-2">
+                            <span className="text-sm">Jump to:</span>
+                            <form onSubmit={handleJumpToPage} className="flex items-center space-x-1">
+                                <input
+                                    type="number"
+                                    min="1"
+                                    max={totalPages}
+                                    value={jumpToPage}
+                                    onChange={(e) => setJumpToPage(e.target.value)}
+                                    placeholder="Page"
+                                    className="w-16 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                                />
+                                <button
+                                    type="submit"
+                                    className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                                >
+                                    Go
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </>
             )}
