@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import NavbarDefault from './components/Navbar';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
@@ -50,6 +50,7 @@ function AppContent() {
           }
         />
         <Route path="/register" element={<RegisterForm />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       {!hideLayout && location.pathname !== '/chat' && <Footer />}
     </>
