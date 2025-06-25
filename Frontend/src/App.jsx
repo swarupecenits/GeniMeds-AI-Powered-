@@ -8,6 +8,7 @@ import RegisterForm from './components/RegisterForm';
 import AiChat from './pages/AiChat';
 import Contact from './pages/Contact';
 import Medicine from './pages/Medicine';
+import Product from './pages/Product';
 import Footer from './components/Footer';
 
 function AppContent() {
@@ -23,6 +24,7 @@ function AppContent() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/medicine" element={<Medicine />} />
+        <Route path="/product/:id" element={<Product />} />
         <Route path="/register" element={<RegisterForm />} />
       </Routes>
       {!hideLayout && location.pathname !== '/chat' && <Footer />}
