@@ -42,21 +42,21 @@ const Contact = () => {
     if (!showSuccessPopup) return null;
     
     return (
-      <div className="fixed inset-0 flex items-center justify-center z-50">
+      <div className="fixed inset-0 flex items-center justify-center z-50 px-2 sm:px-0">
         <div className="absolute inset-0 bg-black/50" onClick={() => setShowSuccessPopup(false)}></div>
-        <div className="relative bg-white rounded-xl shadow-2xl p-6 max-w-md mx-auto transform transition-all animate-fadeIn">
-          <div className="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="relative bg-white rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-xs sm:max-w-md mx-auto transform transition-all animate-fadeIn">
+          <div className="bg-green-100 rounded-full w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 sm:h-10 sm:w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h3 className="text-xl font-bold text-center text-gray-800 mb-2">Thank You!</h3>
-          <p className="text-center text-gray-600">
+          <h3 className="text-lg sm:text-xl font-bold text-center text-gray-800 mb-2">Thank You!</h3>
+          <p className="text-center text-gray-600 text-sm sm:text-base">
             Your message has been sent successfully. Our team will get back to you soon.
           </p>
           <button
             onClick={() => setShowSuccessPopup(false)}
-            className="mt-4 w-full py-2 px-4 bg-gradient-to-r from-violet-500 to-blue-500 text-white font-medium rounded-lg hover:from-violet-600 hover:to-blue-600 transition-all duration-300"
+            className="mt-4 w-full py-2 px-4 bg-gradient-to-r from-violet-500 to-blue-500 text-white font-medium rounded-lg hover:from-violet-600 hover:to-blue-600 transition-all duration-300 text-sm sm:text-base"
           >
             Close
           </button>
@@ -66,7 +66,7 @@ const Contact = () => {
   };
 
   return (
-    <section className="bg-white py-16 lg:py-16">
+    <section className="bg-white py-16 lg:py-16 overflow-x-hidden">
       <div className="container mx-auto px-6 sm:px-8 max-w-7xl">
         {/* Header */}
         <div className="text-center mb-12">
