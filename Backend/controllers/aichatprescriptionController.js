@@ -1,9 +1,9 @@
 const { AIProjectClient } = require('@azure/ai-projects');
 const { DefaultAzureCredential } = require('@azure/identity');
+const { AzureOpenAI } = require('openai');
 
 
-
-const endpoint = "https://t-magandhi-4440-resource.services.ai.azure.com/api/projects/t-magandhi-4440";
+const endpoint = "https://t-magandhi-4440-resource.cognitiveservices.azure.com/openai/deployments/gpt-4o-mini/chat/completions?api-version=2025-01-01-preview";
 const deployment = "gpt-4o-mini"; // Replace with your deployment name
 const fs = require('fs');
 const express = require('express');
@@ -282,10 +282,14 @@ async function chatWithFiles(req, res) {
         console.log(`Successfully processed ${processedFiles.length} files`);
         
         // Create AI client
-        const project = new AIProjectClient(endpoint, new DefaultAzureCredential());
-        const client = await project.inference.azureOpenAI({
+        const client = new AzureOpenAI({
+            endpoint: endpoint,
+            apiKey: process.env.AZURE_AI_API_KEY,
+            deployment: deployment,
             apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2024-12-01-preview"
+            
         });
+       
         
         // Create messages with files
         const messages = createMessagesWithFiles(
@@ -352,9 +356,12 @@ async function simpleChat(req, res) {
         }
         
         // Create AI client
-        const project = new AIProjectClient(endpoint, new DefaultAzureCredential());
-        const client = await project.inference.azureOpenAI({
+        const client = new AzureOpenAI({
+            endpoint: endpoint,
+            apiKey: process.env.AZURE_AI_API_KEY,
+            deployment: deployment,
             apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2024-12-01-preview"
+            
         });
         
         // Create messages
@@ -412,6 +419,7 @@ async function getResponse() {
     console.log(`\n==================== 🌷 COMPLETIONS POEM ====================\n`);
     console.log(chatCompletion.choices[0].message.content);
 }
+
 
 module.exports = {
     upload: upload.array('files', 10),

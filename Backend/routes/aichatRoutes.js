@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { upload, chatWithFiles, simpleChat, getResponse } = require('../controllers/aichat');
+const { upload, chatWithFiles, simpleChat, getResponse } = require('../controllers/aichatprescriptionController');
 
 // Route to upload files and chat with AI (supports images, PDFs, text files)
 router.post('/upload-analyze', upload, chatWithFiles);
