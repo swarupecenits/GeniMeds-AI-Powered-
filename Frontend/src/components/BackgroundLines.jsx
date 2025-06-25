@@ -1,6 +1,5 @@
 import { cn1 } from "../lib/utils";
 import { motion } from "motion/react";
-import React from "react";
 
 export const BackgroundLines = ({
   children,

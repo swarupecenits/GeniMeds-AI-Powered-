@@ -185,9 +185,10 @@ const Medicine = () => {
             </div>
 
             {loading ? (
-                <div className="flex items-center justify-center py-20">
-                    <div className="text-2xl text-gray-600">Loading products...</div>
-                </div>
+                    <div className="flex flex-col items-center justify-center py-20">
+                    <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                    <div className="mt-4 text-lg text-gray-800 dark:text-gray-400">Loading Medicines...</div>
+                    </div>
             ) : medicines.length === 0 && searchTerm ? (
                 <div className="text-center py-20">
                     <div className="text-xl text-gray-600 mb-4">No products found for "{searchTerm}"</div>
