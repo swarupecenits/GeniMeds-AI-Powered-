@@ -1,0 +1,83 @@
+[
+  {
+    "id": 1,
+    "title": "Cetirizine 45 mg Film-coated Tablets",
+    "description": "Cetirizine hydrochloride is the active ingredient, used to relieve allergy symptoms such as sneezing, runny nose, and itchy eyes.",
+    "price": 25.0,
+    "image": "../assets/products/product1.jpg",
+    "reviews": 3,
+    "rating": 4
+  },
+  {
+    "id": 2,
+    "title": "Ibuprofen 500 mg Capsules",
+    "description": "Ibuprofen is used to relieve pain from various conditions such as headache, dental pain, menstrual cramps, muscle aches, or arthritis. It is also used to reduce fever and to relieve minor aches and pain due to the common cold or flu.",
+    "price": 32.0,
+    "image": "../assets/products/product2.jpg",
+    "reviews": 20,
+    "rating": 5
+  },
+  {
+    "id": 3,
+    "title": "Ulipristal Acetate 30 mg Tablet",
+    "description": "Ulipristal acetate is an emergency contraceptive for occasional use only. It should not replace a regular contraceptive method. Women are advised to adopt a regular method of contraception.",
+    "price": 49.0,
+    "image": "../assets/products/product3.jpg",
+    "reviews": 25,
+    "rating": 3
+  },
+  {
+    "id": 4,
+    "title": "Multivitamin with Iron, Vitamin C, B12, Folic Acid",
+    "description": "This combination product contains a mineral (iron) along with vitamins (vitamin C, vitamin B12, and folic acid). It is used to treat or prevent a lack of these nutrients which may occur in certain health conditions (e.g., anemia, pregnancy, poor diet, surgery recovery).",
+    "price": 28.9,
+    "image": "../assets/products/product4.jpg",
+    "reviews": 30,
+    "rating": 4
+  },
+  {
+    "id": 5,
+    "title": "Ibuprofen 250 mg Capsules x18",
+    "description": "Ibuprofen is used to relieve pain from various conditions such as headache, dental pain, menstrual cramps, muscle aches, or arthritis. It is also used to reduce fever and to relieve minor aches and pain due to the common cold or flu.",
+    "price": 17.5,
+    "image": "../assets/products/product5.jpg",
+    "reviews": 100,
+    "rating": 5
+  },
+  {
+    "id": 6,
+    "title": "Cetirizine 25 mg Film-coated Tablets",
+    "description": "Cetirizine hydrochloride is the active ingredient, used to relieve allergy symptoms such as sneezing, runny nose, and itchy eyes.",
+    "price": 34.9,
+    "image": "../assets/products/product6.jpg",
+    "reviews": 23,
+    "rating": 3
+  },
+  {
+    "id": 7,
+    "title": "Hand Creams for Dry, Sensitive Skin",
+    "description": "You may have used Aquaphor's Advanced Therapy Healing Ointment for your dry lips or cuticles before, and while it's great for curbing chapped lips, we especially love this miracle treatment for our cracked hands. Its thick texture repairs, protects, and soothes all skin types, including sensitive and eczema-prone (thanks to the fragrance-free formula).",
+    "price": 56.9,
+    "image": "../assets/products/product7.jpg",
+    "reviews": 45,
+    "rating": 3
+  },
+  {
+    "id": 8,
+    "title": "Film-coated Tablet 250 mg 30 pieces",
+    "description": "Bath & Body Works' Rose Hand Cream is made with moisturizing shea butter and vitamin E to hydrate skin. This hand treatment not only benefits dry hands but leaves them smelling like an expensive bouquet of roses (for only $7).",
+    "price": 19.8,
+    "image": "../assets/products/product8.jpg",
+    "reviews": 23,
+    "rating": 3
+  },
+  {
+    "id": 9,
+    "title": "Ibuprofen 250 mg Capsules x19",
+    "description": "Ibuprofen is used to relieve pain from various conditions such as headache, dental pain, menstrual cramps, muscle aches, or arthritis. It is also used to reduce fever and to relieve minor aches and pain due to the common cold or flu.",
+    "price": 17.5,
+    "image": "../assets/products/product4.jpg",
+    "reviews": 100,
+    "rating": 5
+  }
+]
