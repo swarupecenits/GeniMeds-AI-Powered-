@@ -9,7 +9,7 @@ const Trust = () => {
           variants={SlideUp(0.2)}
           initial="initial"
           whileInView="animate"
-          className="py-6 text-4xl pb-7 font-bold text-darkBlue text-center"
+          className="py-6 text-2xl sm:text-2xl md:text-4xl  pb-7  font-bold text-darkBlue text-center"
         >
           Why you can trust this tools
         </motion.h1>
@@ -25,7 +25,7 @@ const Trust = () => {
               alt="Reminder"
               className="mx-auto md:mx-0"
             />
-            <p className=" text-3xl font-semibold">Based on reliable sources</p>
+            <p className=" text-2xl sm:text-2xl md:text-3xl font-semibold">Based on reliable sources</p>
             <p className="">
               We want our tool to be safe and reliable, so its logic is based on
               the official global information provided by the WHO and web search of Med related Fields.
@@ -46,7 +46,7 @@ const Trust = () => {
               alt="Reminder"
               className="mx-auto md:mx-0"
             />
-            <p className="text-3xl font-semibold">Based on Trusted sources</p>
+            <p className="text-2xl sm:text-2xl md:text-3xl font-semibold">Based on Trusted sources</p>
             <p className="">
               We want our tool to be restricted to be used for Medical knowledge accessible yo anyone, so its logic is based on
               the official Medicinal data.
