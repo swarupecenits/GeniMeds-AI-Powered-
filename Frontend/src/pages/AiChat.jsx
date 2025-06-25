@@ -509,7 +509,7 @@ const AiChat = () => {
           <div className="flex items-end space-x-3">            {/* File upload button */}
             <button
               onClick={triggerFileUpload}
-              className="flex-shrink-0 p-3 bg-white/70 hover:bg-white/90 backdrop-blur-md rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-gray-200/50 border border-white/50 group disabled:opacity-50 disabled:cursor-not-allowed relative"
+              className="flex-shrink-0 mb-2 p-3 bg-white/70 hover:bg-white/90 backdrop-blur-md rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-gray-200/50 border border-white/50 group disabled:opacity-50 disabled:cursor-not-allowed relative"
               title={`Upload ${analysisMode === 'prescription' ? 'prescription' : 'lab report'} files (PDF, Image, or Text) - ${uploadedFiles.length}/10 files selected`}
             >
               <svg className="w-5 h-5 text-gray-600 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -557,7 +557,7 @@ const AiChat = () => {
             <button
               onClick={handleSendMessage}
               disabled={isSendDisabled()}
-              className="flex-shrink-0 p-3 bg-gradient-to-br from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-blue-500/25 disabled:shadow-gray-400/25 disabled:cursor-not-allowed group"
+              className="flex-shrink-0 mb-2 p-3 bg-gradient-to-br from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-blue-500/25 disabled:shadow-gray-400/25 disabled:cursor-not-allowed group"
             >
               <svg className="w-5 h-5 text-white group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
