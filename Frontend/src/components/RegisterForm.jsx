@@ -64,17 +64,17 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
+    <div className="flex items-center justify-center min-h-screen bg-white">
       <form
         onSubmit={handleRegister}
-        className="bg-white w-full max-w-md p-10 rounded-xl shadow-2xl space-y-6"
+        className="bg-gradient-to-l from-blue-500 via-purple-500 to-pink-500 w-full max-w-md p-10 rounded-xl shadow-2xl space-y-6"
       >
-        <h2 className="text-3xl font-bold text-center text-gray-800">Sign Up</h2>
+        <h2 className="text-3xl font-bold  text-center text-white">Sign Up</h2>
 
         <input
           type="text"
           placeholder="Full Name"
-          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full px-4 py-2 text-white border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
@@ -82,7 +82,7 @@ const RegisterForm = () => {
         <input
           type="email"
           placeholder="Email"
-          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full px-4 py-2 text-white border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -90,7 +90,7 @@ const RegisterForm = () => {
         <input
           type="password"
           placeholder="Password"
-          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full px-4 py-2 border text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
@@ -98,25 +98,25 @@ const RegisterForm = () => {
 
         <button
           type="submit"
-          className="w-full py-2 font-bold text-white rounded-md bg-gradient-to-r from-cyan-400 to-pink-500 hover:opacity-90 transition-all"
+          className="w-full py-2 font-bold text-white rounded-md bg-gradient-to-r from-pink-500 to-cyan-400 hover:opacity-90 transition-all"
         >
           REGISTER
         </button>
 
-        <div className="text-center text-sm text-gray-500">Or Sign Up Using</div>
+        <div className="text-center text-sm text-white">Or Sign Up Using</div>
 
         <button
           type="button"
           onClick={handleGoogleSignUp}
-          className="w-full flex justify-center items-center gap-2 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition"
+          className="w-full text-white flex justify-center items-center gap-2 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition"
         >
           <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
           <span>Continue with Google</span>
         </button>
 
-        <p className="text-center text-sm text-gray-600">
+        <p className="text-center text-white text-sm ">
           Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 hover:underline font-semibold">
+          <Link to="/login" className="text-blue-900 hover:underline font-semibold">
             Login
           </Link>
         </p>
