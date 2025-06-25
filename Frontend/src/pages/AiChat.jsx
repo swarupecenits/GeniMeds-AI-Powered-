@@ -474,95 +474,99 @@ const AiChat = () => {
           </div>
         )}
 
-        {/* Analysis Mode Toggle - Bottom Position */}
-        <div className="px-4 py-3 backdrop-blur-md bg-white/20 border-t border-white/10">
-          <div className="flex items-center justify-center">
-            <div className="flex items-center space-x-2 bg-white/60 rounded-full p-1 backdrop-blur-sm shadow-lg">
-              <button
-                onClick={() => handleModeChange('prescription')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${
-                  analysisMode === 'prescription'
-                    ? 'bg-blue-500 text-white shadow-lg transform scale-105'
-                    : 'text-gray-600 hover:text-blue-600 hover:bg-white/30'
-                }`}
-              >
-                <span>💊</span>
-                <span>Prescription</span>
-              </button>
-              <button
-                onClick={() => handleModeChange('lab-reports')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${
-                  analysisMode === 'lab-reports'
-                    ? 'bg-green-500 text-white shadow-lg transform scale-105'
-                    : 'text-gray-600 hover:text-green-600 hover:bg-white/30'
-                }`}
-              >
-                <span>🔬</span>
-                <span>Lab Reports</span>
-              </button>
+        {/* Fixed bottom controls: Analysis Mode Toggle + Input Area */}
+        <div className="fixed bottom-0 left-0 w-full z-50 bg-transparent" style={{right: 0}}>
+          {/* Analysis Mode Toggle */}
+          <div className="px-4 py-3 backdrop-blur-md bg-white/20 border-t border-white/10 max-w-4xl mx-auto">
+            <div className="flex items-center justify-center">
+              <div className="flex items-center space-x-2 bg-white/60 rounded-full p-1 backdrop-blur-sm shadow-lg">
+                <button
+                  onClick={() => handleModeChange('prescription')}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${
+                    analysisMode === 'prescription'
+                      ? 'bg-blue-500 text-white shadow-lg transform scale-105'
+                      : 'text-gray-600 hover:text-blue-600 hover:bg-white/30'
+                  }`}
+                >
+                  <span>💊</span>
+                  <span>Prescription</span>
+                </button>
+                <button
+                  onClick={() => handleModeChange('lab-reports')}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${
+                    analysisMode === 'lab-reports'
+                      ? 'bg-green-500 text-white shadow-lg transform scale-105'
+                      : 'text-gray-600 hover:text-green-600 hover:bg-white/30'
+                  }`}
+                >
+                  <span>🔬</span>
+                  <span>Lab Reports</span>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Input area */}
-        <div className="p-4 backdrop-blur-md bg-white/30 border-t border-white/20">
-          <div className="flex items-end space-x-3">            {/* File upload button */}
-            <button
-              onClick={triggerFileUpload}
-              className="flex-shrink-0 p-3 bg-white/70 hover:bg-white/90 backdrop-blur-md rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-gray-200/50 border border-white/50 group disabled:opacity-50 disabled:cursor-not-allowed relative"
-              title={`Upload ${analysisMode === 'prescription' ? 'prescription' : 'lab report'} files (PDF, Image, or Text) - ${uploadedFiles.length}/10 files selected`}
-            >
-              <svg className="w-5 h-5 text-gray-600 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-              </svg>              {/* File count indicator */}
-              {uploadedFiles.length > 0 && (
-                <div className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 text-white rounded-full text-xs flex items-center justify-center font-bold">
-                  {uploadedFiles.length}
-                </div>
-              )}
-              {/* Hover indicator dot - only show when no files */}
-              {uploadedFiles.length === 0 && (
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              )}
-            </button>
+          {/* Input area */}
+          <div className="p-4 backdrop-blur-md bg-white/30 border-t border-white/20 max-w-4xl mx-auto">
+            <div className="flex items-end space-x-3">
+              {/* File upload button */}
+              <button
+                onClick={triggerFileUpload}
+                className="flex-shrink-0 p-3 bg-white/70 hover:bg-white/90 backdrop-blur-md rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-gray-200/50 border border-white/50 group disabled:opacity-50 disabled:cursor-not-allowed relative"
+                title={`Upload ${analysisMode === 'prescription' ? 'prescription' : 'lab report'} files (PDF, Image, or Text) - ${uploadedFiles.length}/10 files selected`}
+              >
+                <svg className="w-5 h-5 text-gray-600 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>              {/* File count indicator */}
+                {uploadedFiles.length > 0 && (
+                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 text-white rounded-full text-xs flex items-center justify-center font-bold">
+                    {uploadedFiles.length}
+                  </div>
+                )}
+                {/* Hover indicator dot - only show when no files */}
+                {uploadedFiles.length === 0 && (
+                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                )}
+              </button>
 
-            {/* Hidden file input */}
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              accept=".jpg,.jpeg,.png,.pdf,.txt"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-
-            {/* Message input */}
-            <div className="flex-1 relative">
-              <textarea
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder={
-                  analysisMode === 'prescription' 
-                    ? "Ask about your prescription or medicine..." 
-                    : "Ask about your lab results or test values..."
-                }
-                className="w-full px-4 py-3 pr-12 bg-white/70 backdrop-blur-md rounded-xl border border-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent resize-none transition-all duration-200 placeholder-gray-500"
-                rows="1"
-                style={{ minHeight: '48px', maxHeight: '120px' }}
+              {/* Hidden file input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept=".jpg,.jpeg,.png,.pdf,.txt"
+                onChange={handleFileUpload}
+                className="hidden"
               />
-            </div>
 
-            {/* Send button */}
-            <button
-              onClick={handleSendMessage}
-              disabled={isSendDisabled()}
-              className="flex-shrink-0 p-3 bg-gradient-to-br from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-blue-500/25 disabled:shadow-gray-400/25 disabled:cursor-not-allowed group"
-            >
-              <svg className="w-5 h-5 text-white group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
-            </button>
+              {/* Message input */}
+              <div className="flex-1 relative">
+                <textarea
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder={
+                    analysisMode === 'prescription' 
+                      ? "Ask about your prescription or medicine..." 
+                      : "Ask about your lab results or test values..."
+                  }
+                  className="w-full px-4 py-3 pr-12 bg-white/70 backdrop-blur-md rounded-xl border border-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent resize-none transition-all duration-200 placeholder-gray-500"
+                  rows="1"
+                  style={{ minHeight: '48px', maxHeight: '120px' }}
+                />
+              </div>
+
+              {/* Send button */}
+              <button
+                onClick={handleSendMessage}
+                disabled={isSendDisabled()}
+                className="flex-shrink-0 p-3 bg-gradient-to-br from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-blue-500/25 disabled:shadow-gray-400/25 disabled:cursor-not-allowed group"
+              >
+                <svg className="w-5 h-5 text-white group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
