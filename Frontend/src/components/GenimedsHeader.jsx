@@ -22,7 +22,7 @@ export default function GenimedsHeader() {
   ];
 
   return (
-    <h1 className="mt-5 text-5xl font-bold leading-tight text-gray-900 sm:text-7xl sm:leading-tight lg:text-9xl lg:leading-tight font-pj">
+    <h1 className="mt-5 text-[1.3rem] font-bold leading-tight text-gray-900 sm:text-7xl sm:leading-tight lg:text-[2.9rem] lg:leading-tight font-pj">
       <TypewriterEffectSmooth
         words={words}
         className="flex justify-center"
