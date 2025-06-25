@@ -19,7 +19,7 @@ const Home = () => {
 
                                 <Link
                                     to="/chat"
-                                    className="z-50 relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-gray-900 font-pj rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+                                    className="z-50 relative inline-flex items-center justify-center px-5 py-2 text-base font-bold text-white transition-all duration-200 bg-gray-900 font-pj rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 sm:px-8 sm:py-4 sm:text-lg"
                                     role="button"
                                 >
                                     Let's Chat with Our AI Assistant
