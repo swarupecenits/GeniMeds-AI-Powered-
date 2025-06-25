@@ -12,9 +12,10 @@ import Footer from './components/Footer';
 
 function AppContent() {
   const location = useLocation();
+  const hideLayout = location.pathname === '/login' || location.pathname === '/register';
   return (
     <>
-      <NavbarDefault />
+      {!hideLayout && <NavbarDefault />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -24,7 +25,7 @@ function AppContent() {
         <Route path="/medicine" element={<Medicine />} />
         <Route path="/register" element={<RegisterForm />} />
       </Routes>
-      {location.pathname !== '/chat' && <Footer />}
+      {!hideLayout && location.pathname !== '/chat' && <Footer />}
     </>
   );
 }
