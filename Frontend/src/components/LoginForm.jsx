@@ -51,16 +51,16 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-2xl p-10 space-y-6">
-        <h2 className="text-3xl font-bold text-center text-gray-800">Login</h2>
+    <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="w-full max-w-md bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-xl shadow-2xl p-10 space-y-6">
+        <h2 className="text-3xl font-bold text-center text-white">Login</h2>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-600">Email</label>
+            <label className="block mb-1 text-sm font-medium text-white">Email</label>
             <input
               type="email"
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2 text-white border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Type your email"
@@ -68,10 +68,10 @@ const LoginForm = () => {
             />
           </div>
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-600">Password</label>
+            <label className="block mb-1 text-sm font-medium text-white">Password</label>
             <input
               type="password"
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2 text-white border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Type your password"
@@ -79,7 +79,7 @@ const LoginForm = () => {
             />
           </div>
 
-          <div className="text-right text-sm text-blue-600 hover:underline cursor-pointer">
+          <div className="text-right text-sm text-white hover:underline cursor-pointer">
             Forgot password?
           </div>
 
@@ -92,7 +92,7 @@ const LoginForm = () => {
         </form>
 
         <div className="flex items-center justify-center">
-          <span className="text-sm text-gray-500">Or Sign in with</span>
+          <span className="text-sm text-white">Or Sign in with</span>
         </div>
 
         <div className="flex justify-center">
@@ -105,7 +105,7 @@ const LoginForm = () => {
           </button>
         </div>
 
-        <p className="text-center text-sm text-gray-600">
+        <p className="text-center text-sm text-white">
           Don't have an account?{' '}
           <Link to="/register" className="text-blue-600 hover:underline font-semibold">
             Sign up
