@@ -3,13 +3,13 @@ import { SlideUp } from "../utility/animation";
 
 const Trust = () => {
   return (
-    <section className="bg-brandWhite py-16 mt-20">
-      <div className="container">
+    <section className="bg-gray-50 py-16 pt-48 sm:pt-32 lg:pt-0">
+      <div className="container p-6">
         <motion.h1
           variants={SlideUp(0.2)}
           initial="initial"
           whileInView="animate"
-          className="py-6 text-4xl font-bold text-darkBlue text-center"
+          className="py-6 text-4xl pb-7 font-bold text-darkBlue text-center"
         >
           Why you can trust this tools
         </motion.h1>
@@ -28,11 +28,11 @@ const Trust = () => {
             <p className=" text-3xl font-semibold">Based on reliable sources</p>
             <p className="">
               We want our tool to be safe and reliable, so its logic is based on
-              the official global information provided by the WHO.
+              the official global information provided by the WHO and web search of Med related Fields.
             </p>
             <p className="text-sm text-gray-400">
               Enchance your preliminary diagnosis and triage with pediatric
-              content <span className="text-primary"> Learnmore</span>
+              content 
             </p>
           </motion.div>
           <motion.div
@@ -46,14 +46,14 @@ const Trust = () => {
               alt="Reminder"
               className="mx-auto md:mx-0"
             />
-            <p className="text-3xl font-semibold">Based on reliable sources</p>
+            <p className="text-3xl font-semibold">Based on Trusted sources</p>
             <p className="">
-              We want our tool to be safe and reliable, so its logic is based on
-              the official global information provided by the WHO.
+              We want our tool to be restricted to be used for Medical knowledge accessible yo anyone, so its logic is based on
+              the official Medicinal data.
             </p>
             <p className="text-sm text-gray-400">
               Enchance your preliminary diagnosis and triage with pediatric
-              content <span className="text-primary"> Learnmore</span>
+              content 
             </p>
           </motion.div>
         </div>
