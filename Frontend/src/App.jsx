@@ -17,20 +17,9 @@ function AppContent() {
     <>
       {!hideLayout && <NavbarDefault />}
       <Routes>
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/about"
-          element={    
-              <About />
-          }
-        />
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
         <Route
           path="/chat"
           element={
@@ -39,8 +28,6 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/contact" element={<Contact />} />
         <Route
           path="/medicine"
           element={
@@ -49,6 +36,7 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+        <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
