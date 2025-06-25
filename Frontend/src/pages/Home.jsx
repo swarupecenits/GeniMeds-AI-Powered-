@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
 import GenimedsHeader from '../components/GenimedsHeader';
 import Trust from '../components/Trust';
+import { BackgroundLines } from "../components/BackgroundLines";
 
 const Home = () => {
     return (
-        <div className="bg-gray-50">
+        <BackgroundLines  className="bg-gray-50">
             <div className="relative py-12 sm:py-16 lg:pt-20 xl:pb-0">
                 <div className="relative px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
                     <div className="max-w-3xl mx-auto text-center">
@@ -31,7 +32,7 @@ const Home = () => {
                 </div>
                 <Trust />
             </div>
-        </div>
+        </BackgroundLines >
     )
 }
 
