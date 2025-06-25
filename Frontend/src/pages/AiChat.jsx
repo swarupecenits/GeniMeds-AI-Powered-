@@ -7,6 +7,7 @@ import React, {
 import MarkdownRenderer from '../components/MarkdownRenderer';
 
 const AiChat = () => {
+  const [analysisMode, setAnalysisMode] = useState('prescription'); // 'prescription' or 'lab-reports'
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -42,6 +43,33 @@ const AiChat = () => {
   useEffect(() => {
     console.log('uploadedFiles state changed:', uploadedFiles);
   }, [uploadedFiles]);
+
+  // Handle mode change and update welcome message
+  const handleModeChange = (newMode) => {
+    setAnalysisMode(newMode);
+    
+    // Update the welcome message based on mode
+    const welcomeMessage = newMode === 'prescription' 
+      ? 'Hello! I\'m GeniMeds AI assistant. How can I help you today? You can upload your prescriptions and ask me any questions you have!'
+      : 'Hello! I\'m GeniMeds Lab Analysis assistant. Upload your lab reports and I\'ll help you understand your test results in simple terms!';
+    
+    setMessages([
+      {
+        id: 1,
+        type: 'ai',
+        content: welcomeMessage,
+        timestamp: new Date().toLocaleTimeString('en-US', { 
+          hour: '2-digit', 
+          minute: '2-digit',
+          hour12: true 
+        })
+      }
+    ]);
+    
+    // Clear uploaded files when switching modes
+    setUploadedFiles([]);
+    setInputMessage('');
+  };
   const handleFileUpload = async (e) => {
     console.log('File upload triggered:', e.target.files);
     const files = Array.from(e.target.files);
@@ -101,7 +129,9 @@ const AiChat = () => {
     const newMessage = {
       id: Date.now(),
       type: 'user',
-      content: inputMessage || (uploadedFiles.length > 0 ? 'Analyze the uploaded files' : ''),
+      content: inputMessage || (uploadedFiles.length > 0 ? 
+        `Analyze the uploaded ${analysisMode === 'prescription' ? 'prescription' : 'lab report'} files` : 
+        ''),
       timestamp: new Date().toLocaleTimeString('en-US', { 
         hour: '2-digit', 
         minute: '2-digit',
@@ -122,8 +152,18 @@ const AiChat = () => {
 
     try {
       let response;
+      
+      // Determine API endpoints based on analysis mode
+      const uploadEndpoint = analysisMode === 'prescription' 
+        ? 'http://localhost:5000/api/ai-chat/upload-analyze'
+        : 'http://localhost:5000/api/lab-analysis/upload-analyze';
+      
+      const chatEndpoint = analysisMode === 'prescription'
+        ? 'http://localhost:5000/api/ai-chat/chat'
+        : 'http://localhost:5000/api/lab-analysis/chat';
+      
         if (uploadedFiles.length > 0) {
-        console.log('Processing uploaded files...');
+        console.log(`Processing uploaded files for ${analysisMode} analysis...`);
         const formData = new FormData();
         
         // Append all files with the name 'files' to match backend expectation
@@ -137,7 +177,7 @@ const AiChat = () => {
           formData.append('message', inputMessage);
         }
         
-        const fileResponse = await fetch('http://localhost:5000/api/ai-chat/upload-analyze', {
+        const fileResponse = await fetch(uploadEndpoint, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -180,8 +220,8 @@ const AiChat = () => {
         });
         
         setUploadedFiles([]);
-      } else {        console.log('Sending text message to backend...');
-        response = await fetch('http://localhost:5000/api/ai-chat/chat', {
+      } else {        console.log(`Sending text message to ${analysisMode} backend...`);
+        response = await fetch(chatEndpoint, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -296,10 +336,15 @@ const AiChat = () => {
               </svg>
             </div>
             <div>
-              <h1 className="text-xl font-semibold text-gray-800">GeniMeds AI</h1>
-              <p className="text-sm text-gray-600">Always here to help</p>
+              <h1 className="text-xl font-semibold text-gray-800">
+                GeniMeds AI {analysisMode === 'prescription' ? '💊' : '🔬'}
+              </h1>
+              <p className="text-sm text-gray-600">
+                {analysisMode === 'prescription' ? 'Prescription Analysis' : 'Lab Reports Analysis'}
+              </p>
             </div>
           </div>
+          
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
             <span className="text-sm text-gray-600">Online</span>
@@ -369,7 +414,7 @@ const AiChat = () => {
           <div className="px-4 py-2 bg-white/50 backdrop-blur-md border-t border-white/20">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-600">
-                Uploaded Files ({uploadedFiles.length}/10):
+                {analysisMode === 'prescription' ? 'Prescription Files' : 'Lab Report Files'} ({uploadedFiles.length}/10):
               </span>
               <button
                 onClick={clearAllFiles}
@@ -421,10 +466,43 @@ const AiChat = () => {
               ))}
             </div>
             <div className="mt-2 text-xs text-blue-600">
-              What do you want to know about your {uploadedFiles.length > 1 ? 'files' : 'file'}?
+              {analysisMode === 'prescription' 
+                ? `What do you want to know about your ${uploadedFiles.length > 1 ? 'prescriptions' : 'prescription'}?`
+                : `What do you want to know about your ${uploadedFiles.length > 1 ? 'lab reports' : 'lab report'}?`
+              }
             </div>
           </div>
         )}
+
+        {/* Analysis Mode Toggle - Bottom Position */}
+        <div className="px-4 py-3 backdrop-blur-md bg-white/20 border-t border-white/10">
+          <div className="flex items-center justify-center">
+            <div className="flex items-center space-x-2 bg-white/60 rounded-full p-1 backdrop-blur-sm shadow-lg">
+              <button
+                onClick={() => handleModeChange('prescription')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${
+                  analysisMode === 'prescription'
+                    ? 'bg-blue-500 text-white shadow-lg transform scale-105'
+                    : 'text-gray-600 hover:text-blue-600 hover:bg-white/30'
+                }`}
+              >
+                <span>💊</span>
+                <span>Prescription</span>
+              </button>
+              <button
+                onClick={() => handleModeChange('lab-reports')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${
+                  analysisMode === 'lab-reports'
+                    ? 'bg-green-500 text-white shadow-lg transform scale-105'
+                    : 'text-gray-600 hover:text-green-600 hover:bg-white/30'
+                }`}
+              >
+                <span>🔬</span>
+                <span>Lab Reports</span>
+              </button>
+            </div>
+          </div>
+        </div>
 
         {/* Input area */}
         <div className="p-4 backdrop-blur-md bg-white/30 border-t border-white/20">
@@ -432,7 +510,7 @@ const AiChat = () => {
             <button
               onClick={triggerFileUpload}
               className="flex-shrink-0 p-3 bg-white/70 hover:bg-white/90 backdrop-blur-md rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-gray-200/50 border border-white/50 group disabled:opacity-50 disabled:cursor-not-allowed relative"
-              title={`Upload files (PDF, Image, or Text) - ${uploadedFiles.length}/10 files selected`}
+              title={`Upload ${analysisMode === 'prescription' ? 'prescription' : 'lab report'} files (PDF, Image, or Text) - ${uploadedFiles.length}/10 files selected`}
             >
               <svg className="w-5 h-5 text-gray-600 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
@@ -464,7 +542,11 @@ const AiChat = () => {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Type your message..."
+                placeholder={
+                  analysisMode === 'prescription' 
+                    ? "Ask about your prescription or medicine..." 
+                    : "Ask about your lab results or test values..."
+                }
                 className="w-full px-4 py-3 pr-12 bg-white/70 backdrop-blur-md rounded-xl border border-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent resize-none transition-all duration-200 placeholder-gray-500"
                 rows="1"
                 style={{ minHeight: '48px', maxHeight: '120px' }}

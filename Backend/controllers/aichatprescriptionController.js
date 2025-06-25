@@ -356,9 +356,12 @@ async function simpleChat(req, res) {
         }
         
         // Create AI client
-        const project = new AIProjectClient(endpoint, new DefaultAzureCredential());
-        const client = await project.inference.azureOpenAI({
+        const client = new AzureOpenAI({
+            endpoint: endpoint,
+            apiKey: process.env.AZURE_AI_API_KEY,
+            deployment: deployment,
             apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2024-12-01-preview"
+            
         });
         
         // Create messages
@@ -416,6 +419,7 @@ async function getResponse() {
     console.log(`\n==================== 🌷 COMPLETIONS POEM ====================\n`);
     console.log(chatCompletion.choices[0].message.content);
 }
+
 
 module.exports = {
     upload: upload.array('files', 10),
