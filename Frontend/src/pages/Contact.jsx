@@ -67,7 +67,7 @@ const Contact = () => {
 
   return (
     <section className="bg-white py-16 lg:py-16">
-      <div className="container mx-auto px-4 max-w-7xl">
+      <div className="container mx-auto px-6 sm:px-8 max-w-7xl">
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-grey-800 sm:text-5xl lg:text-6xl font-pj">
