@@ -25,10 +25,30 @@ const LoginForm = () => {
       }
 
       const token = await userCred.user.getIdToken();
-      await fetch('http://localhost:5000/api/auth/sync', {
+      
+      // Sync with backend
+      const syncResponse = await fetch('http://localhost:5000/api/auth/sync', {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
       });
+
+      if (syncResponse.ok) {
+        const syncData = await syncResponse.json();
+        
+        // Store user info and token
+        localStorage.setItem('user', JSON.stringify({
+          displayName: syncData.user.name,
+          email: syncData.user.email,
+          photoURL: syncData.user.photoURL
+        }));
+        localStorage.setItem('token', token);
+
+        // Notify other components
+        window.dispatchEvent(new Event('user-updated'));
+      }
 
       navigate('/');
     } catch (err) {
@@ -44,19 +64,29 @@ const handleGoogleSignIn = async () => {
 
     const token = await user.getIdToken();
 
-    localStorage.setItem('user', JSON.stringify({
-      displayName: user.displayName,
-      email: user.email,
-      photoURL: user.photoURL
-    }));
-    localStorage.setItem('token', token);
-
-    window.dispatchEvent(new Event('user-updated'));
-
-    await fetch('http://localhost:5000/api/auth/sync', {
+    // Sync with backend first
+    const syncResponse = await fetch('http://localhost:5000/api/auth/sync', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { 
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
     });
+
+    if (syncResponse.ok) {
+      const syncData = await syncResponse.json();
+      
+      // Store user info and token
+      localStorage.setItem('user', JSON.stringify({
+        displayName: syncData.user.name || user.displayName,
+        email: syncData.user.email,
+        photoURL: syncData.user.photoURL || user.photoURL
+      }));
+      localStorage.setItem('token', token);
+
+      // Notify other components
+      window.dispatchEvent(new Event('user-updated'));
+    }
 
     navigate('/');
   } catch (error) {
