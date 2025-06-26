@@ -114,7 +114,7 @@ const LabAnalysis = () => {
         // Add conversation history
         formData.append('conversationHistory', JSON.stringify(buildConversationHistory()));
         
-        const fileResponse = await fetch('http://localhost:5000/api/lab-analysis/upload-analyze', {
+        const fileResponse = await fetch('https://genimeds-backend.onrender.com/api/lab-analysis/upload-analyze', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -146,7 +146,7 @@ const LabAnalysis = () => {
         
       } else {
         // Handle text-only lab consultation
-        const textResponse = await fetch('http://localhost:5000/api/lab-analysis/chat', {
+        const textResponse = await fetch('https://genimeds-backend.onrender.com/api/lab-analysis/chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

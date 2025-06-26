@@ -155,12 +155,12 @@ const AiChat = () => {
       
       // Determine API endpoints based on analysis mode
       const uploadEndpoint = analysisMode === 'prescription' 
-        ? 'http://localhost:5000/api/ai-chat/upload-analyze'
-        : 'http://localhost:5000/api/lab-analysis/upload-analyze';
+        ? 'https://genimeds-backend.onrender.com/api/ai-chat/upload-analyze'
+        : 'https://genimeds-backend.onrender.com/api/lab-analysis/upload-analyze';
       
       const chatEndpoint = analysisMode === 'prescription'
-        ? 'http://localhost:5000/api/ai-chat/chat'
-        : 'http://localhost:5000/api/lab-analysis/chat';
+        ? 'https://genimeds-backend.onrender.com/api/ai-chat/chat'
+        : 'https://genimeds-backend.onrender.com/api/lab-analysis/chat';
       
         if (uploadedFiles.length > 0) {
         console.log(`Processing uploaded files for ${analysisMode} analysis...`);
