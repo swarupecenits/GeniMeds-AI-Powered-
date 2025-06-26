@@ -149,6 +149,8 @@ const AiChat = () => {
     });
     setInputMessage('');
     setIsLoading(true);
+    // Remove uploaded files from input after sending
+    setUploadedFiles([]);
 
     try {
       let response;
