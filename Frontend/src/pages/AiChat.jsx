@@ -326,7 +326,7 @@ const AiChat = () => {
       </div>
 
       {/* Main chat container */}
-      <div className="relative z-10 flex flex-col h-screen max-w-4xl mx-auto">
+      <div className="relative z-10 flex flex-col h-[calc(100vh-150px)] max-w-4xl mx-auto mb-28">
         {/* Header */}
         <div className="flex items-center justify-between p-6 backdrop-blur-md bg-white/30 border-b border-white/20">
           <div className="flex items-center space-x-3">
@@ -352,7 +352,7 @@ const AiChat = () => {
         </div>
 
         {/* Messages area */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide">
           {messages.map((message) => (
             <div
               key={message.id}
@@ -575,3 +575,13 @@ const AiChat = () => {
 };
 
 export default AiChat;
+
+/* Add this to your global CSS (e.g., index.css or App.css):
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+*/
