@@ -10,6 +10,11 @@ export const API_ENDPOINTS = {
     PROFILE: `${API_BASE_URL}/api/auth/profile`,
   },
   CHAT: `${API_BASE_URL}/api/ai-chat`,
+  CHAT_HISTORY: {
+    SESSIONS: `${API_BASE_URL}/api/chat-history/sessions`,
+    SESSION: (sessionId) => `${API_BASE_URL}/api/chat-history/sessions/${sessionId}`,
+    UPDATE_TITLE: (sessionId) => `${API_BASE_URL}/api/chat-history/sessions/${sessionId}/title`,
+  },
   MEDICINES: `${API_BASE_URL}/api/medicines`,
   LAB_REPORTS: `${API_BASE_URL}/api/lab-reports`,
   LAB_ANALYSIS: `${API_BASE_URL}/api/lab-analysis`,

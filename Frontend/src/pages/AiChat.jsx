@@ -5,6 +5,9 @@ import React, {
 } from 'react';
 
 import MarkdownRenderer from '../components/MarkdownRenderer';
+import ChatHistorySidebar from '../components/ChatHistorySidebar';
+import { API_ENDPOINTS } from '../config/api';
+import { auth } from '../firebase/firebase';
 
 const AiChat = () => {
   const [analysisMode, setAnalysisMode] = useState('prescription'); // 'prescription' or 'lab-reports'
@@ -14,6 +17,14 @@ const AiChat = () => {
     datetime: '',
     email: ''
   });
+  
+  // Chat History States
+  const [currentSessionId, setCurrentSessionId] = useState(() => {
+    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  });
+  const [showChatHistory, setShowChatHistory] = useState(false);
+  const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
+  
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -49,6 +60,107 @@ const AiChat = () => {
   useEffect(() => {
     console.log('uploadedFiles state changed:', uploadedFiles);
   }, [uploadedFiles]);
+
+  // Auto-save chat session when messages change
+  useEffect(() => {
+    if (autoSaveEnabled && messages.length > 1 && auth.currentUser) { // Don't save just the welcome message
+      const saveTimeout = setTimeout(() => {
+        console.log('Auto-saving chat session:', currentSessionId, 'with', messages.length, 'messages');
+        saveChatSession();
+      }, 2000); // Auto-save after 2 seconds of inactivity
+      
+      return () => clearTimeout(saveTimeout);
+    }
+  }, [messages, currentSessionId, analysisMode, autoSaveEnabled]);
+
+  // Chat History Functions
+  const saveChatSession = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        console.log('No user logged in, skipping save');
+        return;
+      }
+
+      console.log('Saving chat session:', currentSessionId);
+      const token = await user.getIdToken();
+      const response = await fetch(API_ENDPOINTS.CHAT_HISTORY.SESSIONS, {
+        method: 'POST',
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          sessionId: currentSessionId,
+          analysisMode: analysisMode,
+          messages: messages
+        })
+      });
+
+      if (response.ok) {
+        console.log('Chat session saved successfully');
+      } else {
+        const error = await response.text();
+        console.error('Failed to save chat session:', error);
+      }
+    } catch (err) {
+      console.error('Error saving chat session:', err);
+    }
+  };
+
+  const loadChatSession = async (sessionId) => {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const token = await user.getIdToken();
+      const response = await fetch(API_ENDPOINTS.CHAT_HISTORY.SESSION(sessionId), {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const chatSession = data.chatSession;
+        
+        setCurrentSessionId(sessionId);
+        setAnalysisMode(chatSession.analysisMode);
+        setMessages(chatSession.messages);
+        setUploadedFiles([]); // Reset uploaded files for now
+        setShowChatHistory(false); // Close sidebar on mobile
+      }
+    } catch (err) {
+      console.error('Error loading chat session:', err);
+    }
+  };
+
+  const startNewChat = async () => {
+    // Save current session before starting new one
+    if (messages.length > 1) {
+      console.log('Saving current session before starting new chat');
+      await saveChatSession();
+    }
+
+    const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    console.log('Starting new chat with session ID:', newSessionId);
+    
+    setCurrentSessionId(newSessionId);
+    setMessages([
+      {
+        id: 1,
+        type: 'ai',
+        content: analysisMode === 'prescription' 
+          ? 'Hello! I\'m GeniMeds AI assistant. How can I help you today? You can upload your prescriptions and ask me any questions you have!'
+          : 'Hello! I\'m GeniMeds Lab Analysis assistant. Upload your lab reports and I\'ll help you understand your test results in simple terms!',
+        timestamp: new Date().toLocaleTimeString('en-US', { 
+          hour: '2-digit', 
+          minute: '2-digit',
+          hour12: true 
+        })
+      }
+    ]);
+    setUploadedFiles([]);
+    setShowChatHistory(false);
+  };
 
   // Handle mode change and update welcome message
   const handleModeChange = (newMode) => {
@@ -300,11 +412,16 @@ const AiChat = () => {
     }
   };
 
+  // Handle keyboard events in textarea
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
+  };
+
+  const clearAllFiles = () => {
+    setUploadedFiles([]);
   };
 
   const triggerFileUpload = () => {
@@ -358,10 +475,6 @@ const AiChat = () => {
     }
   };
 
-  const clearAllFiles = () => {
-    setUploadedFiles([]);
-  };
-
   return (
     
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 relative overflow-hidden">
@@ -373,11 +486,32 @@ const AiChat = () => {
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-pink-400/20 to-indigo-400/20 rounded-full blur-3xl"></div>
       </div>
 
+      {/* Chat History Sidebar */}
+      <ChatHistorySidebar
+        isOpen={showChatHistory}
+        onClose={() => setShowChatHistory(false)}
+        onSelectSession={loadChatSession}
+        onNewChat={startNewChat}
+        currentSessionId={currentSessionId}
+        analysisMode={analysisMode}
+      />
+
       {/* Main chat container */}
       <div className="relative z-10 flex flex-col h-[calc(100vh-150px)] max-w-4xl mx-auto mb-28">
         {/* Header */}
         <div className="flex items-center justify-between p-6 backdrop-blur-md bg-white/30 border-b border-white/20">
           <div className="flex items-center space-x-3">
+            {/* Chat History Toggle Button */}
+            <button
+              onClick={() => setShowChatHistory(true)}
+              className="w-10 h-10 bg-white/70 hover:bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-lg shadow-gray-200/50 border border-white/50 group"
+              title="Chat History"
+            >
+              <svg className="w-5 h-5 text-gray-600 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </button>
+            
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -393,9 +527,23 @@ const AiChat = () => {
             </div>
           </div>
           
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-sm text-gray-600">Online</span>
+          <div className="flex items-center space-x-4">
+            {/* New Chat Button */}
+            <button
+              onClick={startNewChat}
+              className="flex items-center space-x-2 px-3 py-2 bg-white/70 hover:bg-white/90 backdrop-blur-md rounded-lg transition-all duration-200 hover:scale-105 shadow-lg shadow-gray-200/50 border border-white/50 group"
+              title="Start New Chat"
+            >
+              <svg className="w-4 h-4 text-gray-600 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              <span className="text-sm text-gray-600 group-hover:text-blue-600 transition-colors hidden sm:block">New Chat</span>
+            </button>
+            
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-sm text-gray-600">Online</span>
+            </div>
           </div>
         </div>
 
@@ -712,7 +860,7 @@ const AiChat = () => {
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <p className="text-sm text-blue-700">
                     <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m-1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     You'll receive an email reminder 5 minutes before the scheduled time. Please schedule at least 6 minutes from now.
                   </p>

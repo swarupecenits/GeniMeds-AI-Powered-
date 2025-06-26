@@ -8,6 +8,7 @@ import RegisterForm from './components/RegisterForm';
 import AiChat from './pages/AiChat';
 import Contact from './pages/Contact';
 import Medicine from './pages/Medicine';
+import Product from './pages/Product';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 function AppContent() {
@@ -29,6 +30,14 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <Medicine />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/product/:id"
+          element={
+            <ProtectedRoute>
+              <Product />
             </ProtectedRoute>
           }
         />

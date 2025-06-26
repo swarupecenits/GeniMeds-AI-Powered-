@@ -44,17 +44,47 @@ This document outlines the changes made to fix authentication for deployment.
 4. Deploy the `dist` folder
 
 #### Backend Deployment:
-1. Set up environment variables on your hosting platform:
+
+**Option 1: Use the Helper Script (Recommended)**
+1. Run the Firebase environment variable extraction script:
+   ```bash
+   cd Backend
+   npm run extract-firebase-env
+   ```
+   This will read your `serviceAccountKey.json` and output properly formatted environment variables.
+
+2. Copy the output environment variables to your deployment platform
+3. Set `MONGO_URI` to your production MongoDB connection string
+4. Deploy your backend
+
+**Option 2: Manual Setup**
+1. Set up environment variables manually on your hosting platform:
    - Copy values from your Firebase `serviceAccountKey.json`
    - Set `FIREBASE_PRIVATE_KEY` with the full private key (including newlines)
    - Set `MONGO_URI` to your production MongoDB connection string
    
 2. **Important:** For the `FIREBASE_PRIVATE_KEY` environment variable:
+   
+   **Method 1 (Recommended): Copy directly from JSON file**
+   ```bash
+   # Open your serviceAccountKey.json and copy the "private_key" value exactly as is
+   # Example:
+   FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC...\n-----END PRIVATE KEY-----\n"
    ```
-   FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYOUR_ACTUAL_PRIVATE_KEY_HERE\n-----END PRIVATE KEY-----\n"
+   
+   **Method 2: For command line setup**
+   ```bash
+   # If setting via CLI, escape the newlines properly
+   export FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYOUR_ACTUAL_PRIVATE_KEY_HERE\n-----END PRIVATE KEY-----\n"
    ```
 
-3. Deploy your backend
+3. **Troubleshooting Private Key Issues:**
+   - Ensure the key starts with `-----BEGIN PRIVATE KEY-----` and ends with `-----END PRIVATE KEY-----`
+   - The key should be one continuous string with `\n` for newlines
+   - Don't remove any characters from the original key
+   - Test locally first by setting the environment variable
+
+4. Deploy your backend
 
 ### Environment Variables Needed:
 
@@ -107,5 +137,42 @@ FIREBASE_UNIVERSE_DOMAIN=googleapis.com
 #### Railway/Render (Backend):
 - Set environment variables in platform dashboard
 - Use the production environment variable template
+
+### Troubleshooting:
+
+#### Firebase Private Key Issues:
+1. **"Failed to parse private key" Error:**
+   - Check that your private key is complete and includes `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----`
+   - Ensure newlines are preserved as `\n` in the environment variable
+   - Copy the exact value from your `serviceAccountKey.json` file
+
+2. **Testing Private Key Locally:**
+   ```bash
+   # Windows PowerShell
+   $env:FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYOUR_KEY_HERE\n-----END PRIVATE KEY-----\n"
+   
+   # Windows Command Prompt
+   set FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYOUR_KEY_HERE\n-----END PRIVATE KEY-----\n"
+   
+   # macOS/Linux
+   export FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYOUR_KEY_HERE\n-----END PRIVATE KEY-----\n"
+   ```
+
+3. **Alternative: Use Base64 Encoding (for problematic platforms):**
+   ```javascript
+   // In firebaseAdmin.js, you can decode base64 if needed
+   const privateKeyBase64 = process.env.FIREBASE_PRIVATE_KEY_BASE64;
+   const privateKey = Buffer.from(privateKeyBase64, 'base64').toString('utf-8');
+   ```
+
+#### API Connection Issues:
+1. **CORS Errors:** Ensure your backend URL is correctly set in frontend
+2. **404 Errors:** Check that API routes are deployed and accessible
+3. **Authentication Errors:** Verify Firebase configuration matches between frontend and backend
+
+#### MongoDB Connection Issues:
+1. **Connection String:** Ensure MongoDB URI is correct for production
+2. **Network Access:** Whitelist your deployment platform's IP ranges
+3. **Database Permissions:** Ensure the MongoDB user has proper permissions
 
 The authentication system is now deployment-ready! 🚀
