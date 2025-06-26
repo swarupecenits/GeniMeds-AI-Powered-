@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '../firebase/firebase';
+import { API_ENDPOINTS } from '../config/api';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -29,7 +30,7 @@ const Profile = () => {
   const fetchUserProfile = async (firebaseUser) => {
     try {
       const token = await firebaseUser.getIdToken();
-      const response = await fetch('http://localhost:5000/api/auth/profile', {
+      const response = await fetch(API_ENDPOINTS.AUTH.PROFILE, {
         headers: { Authorization: `Bearer ${token}` },
       });
       
@@ -53,7 +54,7 @@ const Profile = () => {
 
     try {
       const token = await user.getIdToken();
-      const response = await fetch('http://localhost:5000/api/auth/profile', {
+      const response = await fetch(API_ENDPOINTS.AUTH.PROFILE, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
