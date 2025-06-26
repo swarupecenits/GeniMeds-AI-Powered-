@@ -6,6 +6,7 @@ import {
 } from 'firebase/auth';
 import { auth } from '../firebase/firebase';
 import { useNavigate, Link } from 'react-router-dom';
+import { API_ENDPOINTS } from '../config/api';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -27,7 +28,7 @@ const LoginForm = () => {
       const token = await userCred.user.getIdToken();
       
       // Sync with backend
-      const syncResponse = await fetch('http://localhost:5000/api/auth/sync', {
+      const syncResponse = await fetch(API_ENDPOINTS.AUTH.SYNC, {
         method: 'POST',
         headers: { 
           Authorization: `Bearer ${token}`,
@@ -65,7 +66,7 @@ const handleGoogleSignIn = async () => {
     const token = await user.getIdToken();
 
     // Sync with backend first
-    const syncResponse = await fetch('http://localhost:5000/api/auth/sync', {
+    const syncResponse = await fetch(API_ENDPOINTS.AUTH.SYNC, {
       method: 'POST',
       headers: { 
         Authorization: `Bearer ${token}`,

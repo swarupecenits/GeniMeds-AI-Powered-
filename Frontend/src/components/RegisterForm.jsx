@@ -7,6 +7,7 @@ import {
 } from 'firebase/auth';
 import { auth } from '../firebase/firebase';
 import { useNavigate, Link } from 'react-router-dom';
+import { API_ENDPOINTS } from '../config/api';
 
 const RegisterForm = () => {
   const [email, setEmail] = useState('');
@@ -24,7 +25,7 @@ const RegisterForm = () => {
 
       const token = await userCred.user.getIdToken();
 
-      await fetch('http://localhost:5000/api/auth/sync', {
+      await fetch(API_ENDPOINTS.AUTH.SYNC, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -49,7 +50,7 @@ const handleGoogleSignUp = async () => {
     const token = await user.getIdToken();
 
     // Sync with backend first
-    const syncResponse = await fetch('http://localhost:5000/api/auth/sync', {
+    const syncResponse = await fetch(API_ENDPOINTS.AUTH.SYNC, {
       method: 'POST',
       headers: { 
         Authorization: `Bearer ${token}`,
