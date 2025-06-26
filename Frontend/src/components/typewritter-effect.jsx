@@ -62,23 +62,6 @@ export const TypewriterEffect = ({ words, className, cursorClassName }) => {
       )}
     >
       {renderWords()}
-      <motion.span
-        initial={{
-          opacity: 0,
-        }}
-        animate={{
-          opacity: 1,
-        }}
-        transition={{
-          duration: 0.8,
-          repeat: Infinity,
-          repeatType: "reverse",
-        }}
-        className={cn(
-          "inline-block rounded-sm w-[4px] h-4 md:h-6 lg:h-10 bg-blue-500 ml-2",
-          cursorClassName
-        )}
-      ></motion.span>
     </div>
   );
 };
@@ -115,7 +98,7 @@ export const TypewriterEffectSmooth = ({ words, className, cursorClassName }) =>
   };
 
   return (
-    <div className={cn("flex -space-x-3 my-6 text-2xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold", className)}>
+    <div className={cn("flex -space-x-3 my-6 font-bold", className)}>
       <motion.div
         className="overflow-hidden pb-2"
         initial={{
@@ -131,7 +114,7 @@ export const TypewriterEffectSmooth = ({ words, className, cursorClassName }) =>
         }}
       >
         <div
-          className="text-xs sm:text-base md:text-xl lg:text-3xl xl:text-5xl font-bold"
+          className="font-bold"
           style={{
             whiteSpace: "nowrap",
           }}
@@ -139,23 +122,7 @@ export const TypewriterEffectSmooth = ({ words, className, cursorClassName }) =>
           {renderWords()}
         </div>
       </motion.div>
-      <motion.span
-        initial={{
-          opacity: 0,
-        }}
-        animate={{
-          opacity: 1,
-        }}
-        transition={{
-          duration: 0.8,
-          repeat: Infinity,
-          repeatType: "reverse",
-        }}
-        className={cn(
-          "block rounded-sm w-[4px] h-4 sm:h-6 xl:h-12 bg-blue-500",
-          cursorClassName
-        )}
-      ></motion.span>
+      {/* Removed the blinking cursor */}
     </div>
   );
 };

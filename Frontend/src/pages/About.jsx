@@ -151,7 +151,7 @@ const About = () => {
               width={200}
               height={200}
               alt="Symptom Checker and Profile Illustration"
-              className="absolute -right-4 -bottom-4 opacity-70 object-contain rounded-2xl"
+              className="absolute -right-4 -bottom-4 opacity-70 object-contain rounded-2xl w-32 h-32 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-52 lg:h-52"
               onError={(e) => (e.target.src = 'https://via.placeholder.com/200?text=Profile')}
             />
           </Card_Style>
