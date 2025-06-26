@@ -27,9 +27,7 @@ function AppContent() {
         <Route
           path="/medicine"
           element={
-            <ProtectedRoute>
-              <Medicine />
-            </ProtectedRoute>
+            <Medicine />
           }
         />
         <Route path="/login" element={<LoginForm />} />
