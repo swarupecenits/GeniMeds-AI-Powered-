@@ -284,7 +284,7 @@ async function chatWithFiles(req, res) {
         // Create AI client
         const client = new AzureOpenAI({
             endpoint: endpoint,
-            apiKey: process.env.AZURE_AI_API_KEY,
+            apiKey: process.env.AZURE_AI_API_KEYS,
             deployment: deployment,
             apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2024-12-01-preview"
             
@@ -358,7 +358,7 @@ async function simpleChat(req, res) {
         // Create AI client
         const client = new AzureOpenAI({
             endpoint: endpoint,
-            apiKey: process.env.AZURE_AI_API_KEY,
+            apiKey: process.env.AZURE_AI_API_KEYS,
             deployment: deployment,
             apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2024-12-01-preview"
             
