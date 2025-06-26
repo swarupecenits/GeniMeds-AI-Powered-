@@ -9,6 +9,7 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/prescriptions', require('./routes/prescriptionRoutes'));
 app.use('/api/lab-reports', require('./routes/labReportRoutes'));
+app.use('/api/lab-analysis', require('./routes/labReportsRoutes')); // New lab reports analysis
 app.use('/api/medicines', require('./routes/medicineRoutes'));
 app.use('/api/ai-chat', require('./routes/aichatRoutes'));
 app.use('/api/analyze', require('./routes/analysisRoutes'));
