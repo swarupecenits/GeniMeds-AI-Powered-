@@ -22,11 +22,7 @@ function AppContent() {
         <Route path="/contact" element={<Contact />} />
         <Route
           path="/chat"
-          element={
-            <ProtectedRoute>
-              <AiChat />
-            </ProtectedRoute>
-          }
+          element={<AiChat />}
         />
         <Route
           path="/medicine"

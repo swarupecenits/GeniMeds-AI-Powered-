@@ -8,6 +8,12 @@ import MarkdownRenderer from '../components/MarkdownRenderer';
 
 const AiChat = () => {
   const [analysisMode, setAnalysisMode] = useState('prescription'); // 'prescription' or 'lab-reports'
+  const [showReminderForm, setShowReminderForm] = useState(false);
+  const [reminderFormData, setReminderFormData] = useState({
+    medicineName: '',
+    datetime: '',
+    email: ''
+  });
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -180,7 +186,9 @@ const AiChat = () => {
         const fileResponse = await fetch(uploadEndpoint, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            ...(localStorage.getItem('token') && {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            })
           },
           body: formData
         });
@@ -225,7 +233,9 @@ const AiChat = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            ...(localStorage.getItem('token') && {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            })
           },
           body: JSON.stringify({
             message: inputMessage
@@ -310,6 +320,44 @@ const AiChat = () => {
     });
   };
 
+  // Handle reminder form submission
+  const handleReminderSubmit = async () => {
+    try {
+      // Use local backend for development, production URL for production
+      const baseUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:5000' 
+        : 'https://genimeds-backend.onrender.com';
+      
+      const response = await fetch(`${baseUrl}/api/reminders/set`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reminderFormData)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        const message = result.note 
+          ? `${result.message}\n\nNote: ${result.note}` 
+          : result.message;
+        alert(message);
+        setShowReminderForm(false);
+        setReminderFormData({
+          medicineName: '',
+          datetime: '',
+          email: ''
+        });
+      } else {
+        alert(`Failed to set reminder: ${result.message}`);
+      }
+    } catch (error) {
+      console.error('Error setting reminder:', error);
+      alert('Failed to set reminder. Please try again.');
+    }
+  };
+
   const clearAllFiles = () => {
     setUploadedFiles([]);
   };
@@ -366,10 +414,26 @@ const AiChat = () => {
                 }`}
               >
                 {message.type === 'ai' ? (
-                  <MarkdownRenderer 
-                    content={message.content} 
-                    className="text-sm leading-relaxed"
-                  />
+                  <div>
+                    <MarkdownRenderer 
+                      content={message.content} 
+                      className="text-sm leading-relaxed"
+                    />
+                    {/* Set Reminder button for AI messages */}
+                    {analysisMode === 'prescription' && (
+                      <div className="mt-3 pt-3 border-t border-gray-200/50">
+                        <button
+                          onClick={() => setShowReminderForm(true)}
+                          className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-lg text-xs font-medium transition-all duration-200 hover:scale-105 shadow-md"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span>Set Reminder</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 ) : (
                   <p className="text-sm leading-relaxed">{message.content}</p>
                 )}
@@ -570,6 +634,111 @@ const AiChat = () => {
           </div>
         </div>
       </div>
+
+      {/* Reminder Popup Modal */}
+      {showReminderForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 scale-100">
+            <div className="p-6">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-800 flex items-center space-x-2">
+                  <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Set Medicine Reminder</span>
+                </h3>
+                <button
+                  onClick={() => setShowReminderForm(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Form */}
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Medicine Name
+                  </label>
+                  <input
+                    type="text"
+                    value={reminderFormData.medicineName}
+                    onChange={(e) => setReminderFormData({...reminderFormData, medicineName: e.target.value})}
+                    placeholder="Enter medicine name"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Date & Time
+                  </label>
+                  <input
+                    type="datetime-local"
+                    value={reminderFormData.datetime}
+                    onChange={(e) => setReminderFormData({...reminderFormData, datetime: e.target.value})}
+                    min={(() => {
+                      const now = new Date();
+                      now.setMinutes(now.getMinutes() + 6); // Add 6 minutes buffer (need 5+ min for reminder)
+                      // Format for datetime-local input (YYYY-MM-DDTHH:MM)
+                      const year = now.getFullYear();
+                      const month = String(now.getMonth() + 1).padStart(2, '0');
+                      const day = String(now.getDate()).padStart(2, '0');
+                      const hours = String(now.getHours()).padStart(2, '0');
+                      const minutes = String(now.getMinutes()).padStart(2, '0');
+                      return `${year}-${month}-${day}T${hours}:${minutes}`;
+                    })()}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    value={reminderFormData.email}
+                    onChange={(e) => setReminderFormData({...reminderFormData, email: e.target.value})}
+                    placeholder="Enter your email"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <p className="text-sm text-blue-700">
+                    <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    You'll receive an email reminder 5 minutes before the scheduled time. Please schedule at least 6 minutes from now.
+                  </p>
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex space-x-3 mt-6">
+                <button
+                  onClick={() => setShowReminderForm(false)}
+                  className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors duration-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleReminderSubmit}
+                  disabled={!reminderFormData.medicineName || !reminderFormData.datetime || !reminderFormData.email}
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-400 disabled:to-gray-500 text-white rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed"
+                >
+                  Set Reminder
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
