@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../firebase/firebase';
 import defaultUserImg from '../assets/img11.png';
 
 
@@ -9,8 +7,10 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [healthDropdownOpen, setHealthDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef();
+  const healthDropdownRef = useRef();
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -43,6 +43,9 @@ function Navbar() {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
+      }
+      if (healthDropdownRef.current && !healthDropdownRef.current.contains(event.target)) {
+        setHealthDropdownOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -134,6 +137,74 @@ function Navbar() {
                 Generic Med
               </Link>
             </li>
+            
+            {/* Health Features Dropdown */}
+            <li className="relative md:inline-block" ref={healthDropdownRef}>
+              <button
+                onClick={() => setHealthDropdownOpen(!healthDropdownOpen)}
+                className="block text-white font-semibold text-center text-lg hover:text-teal-200 transition-colors duration-300 px-4 py-6 md:px-0 md:py-0 flex items-center"
+              >
+                Health Tools
+                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {healthDropdownOpen && (
+                <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-md shadow-lg z-50 py-2 border">
+                  <Link
+                    to="/chat"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                    onClick={() => {setHealthDropdownOpen(false); setIsOpen(false);}}
+                  >
+                    AI Health Chat
+                  </Link>
+                  <Link
+                    to="/symptom-checker"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                    onClick={() => {setHealthDropdownOpen(false); setIsOpen(false);}}
+                  >
+                    Symptom Checker
+                  </Link>
+                  <Link
+                    to="/find-doctors"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                    onClick={() => {setHealthDropdownOpen(false); setIsOpen(false);}}
+                  >
+                    Find Doctors
+                  </Link>
+                  <Link
+                    to="/health-tracker"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                    onClick={() => {setHealthDropdownOpen(false); setIsOpen(false);}}
+                  >
+                    Health Tracker
+                  </Link>
+                  <Link
+                    to="/mental-health"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                    onClick={() => {setHealthDropdownOpen(false); setIsOpen(false);}}
+                  >
+                    Mental Health
+                  </Link>
+                  <Link
+                    to="/meditation"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                    onClick={() => {setHealthDropdownOpen(false); setIsOpen(false);}}
+                  >
+                    Meditation Zone
+                  </Link>
+                  <Link
+                    to="/emergency-contacts"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                    onClick={() => {setHealthDropdownOpen(false); setIsOpen(false);}}
+                  >
+                    Emergency Contacts
+                  </Link>
+                </div>
+              )}
+            </li>
+            
             <li className="md:inline-block">
               <Link
                 to="/contact"

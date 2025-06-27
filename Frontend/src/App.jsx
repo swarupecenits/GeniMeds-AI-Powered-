@@ -11,6 +11,12 @@ import Medicine from './pages/Medicine';
 import Product from './pages/Product';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import MentalHealth from './pages/MentalHealth';
+import FindDoctors from './pages/FindDoctors';
+import MeditationZone from './pages/MeditationZone';
+import HealthTracker from './pages/HealthTracker';
+import SymptomChecker from './pages/SymptomChecker';
+import EmergencyContacts from './pages/EmergencyContacts';
 function AppContent() {
   const location = useLocation();
   const hideLayout = location.pathname === '/login' || location.pathname === '/register';
@@ -49,6 +55,12 @@ function AppContent() {
             </ProtectedRoute>
           } 
         />
+        <Route path="/mental-health" element={<MentalHealth />} />
+        <Route path="/find-doctors" element={<FindDoctors />} />
+        <Route path="/meditation" element={<MeditationZone />} />
+        <Route path="/health-tracker" element={<HealthTracker />} />
+        <Route path="/symptom-checker" element={<SymptomChecker />} />
+        <Route path="/emergency-contacts" element={<EmergencyContacts />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       {!hideLayout && location.pathname !== '/chat' && <Footer />}
