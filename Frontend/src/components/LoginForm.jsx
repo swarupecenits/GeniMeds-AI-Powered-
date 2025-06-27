@@ -57,45 +57,74 @@ const LoginForm = () => {
     }
   };
 
-const handleGoogleSignIn = async () => {
-  try {
-    const provider = new GoogleAuthProvider();
-    const userCred = await signInWithPopup(auth, provider);
-    const user = userCred.user;
+  const handleGoogleSignIn = async () => {
+    setError("");
+    try {
+      const provider = new GoogleAuthProvider();
+      const userCred = await signInWithPopup(auth, provider);
+      const user = userCred.user;
 
-    const token = await user.getIdToken();
+      if (!user) {
+        setError("Google sign-in failed: No user returned.");
+        return;
+      }
 
-    // Sync with backend first
-    const syncResponse = await fetch(API_ENDPOINTS.AUTH.SYNC, {
-      method: 'POST',
-      headers: { 
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-    });
+      const token = await user.getIdToken();
 
-    if (syncResponse.ok) {
+      // Sync with backend first
+      let syncResponse;
+      try {
+        syncResponse = await fetch(API_ENDPOINTS.AUTH.SYNC, {
+          method: 'POST',
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+        });
+      } catch (syncErr) {
+        console.error("Backend sync network error:", syncErr);
+        setError("Network error during backend sync. Please try again.");
+        return;
+      }
+
+      if (!syncResponse.ok) {
+        let backendMsg = "";
+        try {
+          const errData = await syncResponse.json();
+          backendMsg = errData?.message || JSON.stringify(errData);
+        } catch (jsonErr) {
+          backendMsg = await syncResponse.text();
+        }
+        console.error("Backend sync failed:", backendMsg);
+        setError(`Backend error: ${backendMsg}`);
+        return;
+      }
+
       const syncData = await syncResponse.json();
-      
       // Store user info and token
       localStorage.setItem('user', JSON.stringify({
-        displayName: syncData.user.name || user.displayName,
-        email: syncData.user.email,
-        photoURL: syncData.user.photoURL || user.photoURL
+        displayName: syncData.user?.name || user.displayName || "",
+        email: syncData.user?.email || user.email || "",
+        photoURL: syncData.user?.photoURL || user.photoURL || ""
       }));
       localStorage.setItem('token', token);
 
       // Notify other components
       window.dispatchEvent(new Event('user-updated'));
+      navigate('/');
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      let msg = "Google sign-in failed.";
+      if (error.code === 'auth/popup-closed-by-user') {
+        msg = "Google sign-in popup was closed before completing.";
+      } else if (error.code === 'auth/account-exists-with-different-credential') {
+        msg = "An account already exists with the same email but different sign-in method.";
+      } else if (error.message) {
+        msg = error.message;
+      }
+      setError(msg);
     }
-
-    navigate('/');
-  } catch (error) {
-    console.error(error);
-    setError('Google sign-in failed.');
-  }
-};
-
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

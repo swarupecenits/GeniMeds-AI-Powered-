@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import defaultUserImg from '../assets/img11.png';
-
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase/firebase';
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
