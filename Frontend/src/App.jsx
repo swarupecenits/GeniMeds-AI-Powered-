@@ -29,12 +29,18 @@ function AppContent() {
         <Route path="/contact" element={<Contact />} />
         <Route
           path="/chat"
-          element={<AiChat />}
+          element={
+            <ProtectedRoute>
+              <AiChat />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/medicine"
           element={
-            <Medicine />
+            <ProtectedRoute>
+              <Medicine />
+            </ProtectedRoute>
           }
         />
         <Route
@@ -47,18 +53,20 @@ function AppContent() {
         />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
-        <Route 
-          path="/profile" 
+        <Route
+          path="/profile"
           element={
+            <ProtectedRoute>
               <Profile />
-          } 
+            </ProtectedRoute>
+          }
         />
-        <Route path="/mental-health" element={<MentalHealth />} />
-        <Route path="/find-doctors" element={<FindDoctors />} />
-        <Route path="/meditation" element={<MeditationZone />} />
-        <Route path="/health-tracker" element={<HealthTracker />} />
-        <Route path="/symptom-checker" element={<SymptomChecker />} />
-        <Route path="/emergency-contacts" element={<EmergencyContacts />} />
+        <Route path="/mental-health" element={<ProtectedRoute><MentalHealth /></ProtectedRoute>} />
+        <Route path="/find-doctors" element={<ProtectedRoute><FindDoctors /></ProtectedRoute>} />
+        <Route path="/meditation" element={<ProtectedRoute><MeditationZone /></ProtectedRoute>} />
+        <Route path="/health-tracker" element={<ProtectedRoute><HealthTracker /></ProtectedRoute>} />
+        <Route path="/symptom-checker" element={<ProtectedRoute><SymptomChecker /></ProtectedRoute>} />
+        <Route path="/emergency-contacts" element={<ProtectedRoute><EmergencyContacts /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       {!hideLayout && location.pathname !== '/chat' && <Footer />}

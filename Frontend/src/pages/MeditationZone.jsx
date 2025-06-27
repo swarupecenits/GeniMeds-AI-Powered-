@@ -82,11 +82,22 @@ const MeditationZone = () => {
     { id: 8, name: 'Wind Chimes', icon: '🎐', category: 'Ambient' }
   ];
 
-  const breathingExercises = [
-    { name: '4-7-8 Breathing', inhale: 4, hold: 7, exhale: 8, description: 'Great for relaxation and sleep' },
-    { name: 'Box Breathing', inhale: 4, hold: 4, exhale: 4, description: 'Reduces stress and improves focus' },
-    { name: 'Deep Breathing', inhale: 6, hold: 2, exhale: 6, description: 'Simple and effective for beginners' }
-  ];
+  // Meditation session timer
+  useEffect(() => {
+    let interval;
+    if (activeSession?.type === 'meditation' && isPlaying && sessionTime > 0) {
+      interval = setInterval(() => {
+        setSessionTime(prev => {
+          if (prev <= 1) {
+            setIsPlaying(false);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [activeSession, isPlaying, sessionTime]);
 
   // Breathing exercise timer
   useEffect(() => {
@@ -150,6 +161,47 @@ const MeditationZone = () => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const [audio, setAudio] = useState(null);
+  const soundFiles = {
+    'Ocean Waves': 'https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5b2.mp3',
+    'Forest Rain': 'https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5b2.mp3',
+    'Campfire': 'https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5b2.mp3',
+    'Birds Singing': 'https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5b2.mp3',
+    'White Noise': 'https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5b2.mp3',
+    'Tibetan Bowls': 'https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5b2.mp3',
+    'Gentle Piano': 'https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5b2.mp3',
+    'Wind Chimes': 'https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5b2.mp3',
+  };
+
+  useEffect(() => {
+    if (audio) {
+      audio.play();
+      return () => {
+        audio.pause();
+        audio.currentTime = 0;
+      };
+    }
+  }, [audio]);
+
+  const handleSound = (soundName) => {
+    if (selectedSound === soundName) {
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+      setSelectedSound('');
+      setAudio(null);
+    } else {
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+      const newAudio = new window.Audio(soundFiles[soundName]);
+      setSelectedSound(soundName);
+      setAudio(newAudio);
+    }
   };
 
   return (
@@ -283,10 +335,7 @@ const MeditationZone = () => {
                       <h4 className="text-sm font-semibold text-gray-800 mb-1">{sound.name}</h4>
                       <p className="text-xs text-gray-600 mb-3">{sound.category}</p>
                       <button
-                        onClick={() => {
-                          setSelectedSound(selectedSound === sound.name ? '' : sound.name);
-                          alert(`${selectedSound === sound.name ? 'Stopped' : 'Playing'}: ${sound.name}`);
-                        }}
+                        onClick={() => handleSound(sound.name)}
                         className={`w-full px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${
                           selectedSound === sound.name
                             ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white'

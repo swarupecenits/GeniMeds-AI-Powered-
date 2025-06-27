@@ -261,7 +261,7 @@ function Navbar() {
           </button>
 
           {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl z-50 py-2 border border-blue-200 animate-dropdown">
+            <div className="absolute  right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl sm:ml-5 z-50 py-2 border border-blue-200 animate-dropdown">
               <div className="h-1 w-full bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 rounded-t-xl mb-2"></div>
               <div className="flex items-center gap-3 px-4 py-2 min-w-0">
                 {user.photoURL ? (
