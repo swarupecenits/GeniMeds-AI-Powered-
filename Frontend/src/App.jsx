@@ -50,9 +50,7 @@ function AppContent() {
         <Route 
           path="/profile" 
           element={
-            <ProtectedRoute>
               <Profile />
-            </ProtectedRoute>
           } 
         />
         <Route path="/mental-health" element={<MentalHealth />} />
