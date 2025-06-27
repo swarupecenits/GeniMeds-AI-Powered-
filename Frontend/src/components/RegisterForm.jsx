@@ -23,6 +23,8 @@ const RegisterForm = () => {
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
       await sendEmailVerification(userCred.user);
 
+      await sendEmailVerification(userCred.user);
+
       const token = await userCred.user.getIdToken();
 
       await fetch(API_ENDPOINTS.AUTH.SYNC, {
