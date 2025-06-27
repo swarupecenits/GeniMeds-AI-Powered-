@@ -9,7 +9,7 @@ import AiChat from './pages/AiChat';
 import Contact from './pages/Contact';
 import Medicine from './pages/Medicine';
 import Footer from './components/Footer';
-
+import ProtectedRoute from './components/ProtectedRoute';
 function AppContent() {
   const location = useLocation();
   const hideLayout = location.pathname === '/login' || location.pathname === '/register';
@@ -17,12 +17,40 @@ function AppContent() {
     <>
       {!hideLayout && <NavbarDefault />}
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/chat" element={<AiChat />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <ProtectedRoute>
+              <About />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/chat"
+          element={
+            <ProtectedRoute>
+              <AiChat />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/medicine" element={<Medicine />} />
+        <Route
+          path="/medicine"
+          element={
+            <ProtectedRoute>
+              <Medicine />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/register" element={<RegisterForm />} />
       </Routes>
       {!hideLayout && location.pathname !== '/chat' && <Footer />}
