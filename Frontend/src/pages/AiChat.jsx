@@ -5,9 +5,26 @@ import React, {
 } from 'react';
 
 import MarkdownRenderer from '../components/MarkdownRenderer';
+import ChatHistorySidebar from '../components/ChatHistorySidebar';
+import { API_ENDPOINTS } from '../config/api';
+import { auth } from '../firebase/firebase';
 
 const AiChat = () => {
   const [analysisMode, setAnalysisMode] = useState('prescription'); // 'prescription' or 'lab-reports'
+  const [showReminderForm, setShowReminderForm] = useState(false);
+  const [reminderFormData, setReminderFormData] = useState({
+    medicineName: '',
+    datetime: '',
+    email: ''
+  });
+  
+  // Chat History States
+  const [currentSessionId, setCurrentSessionId] = useState(() => {
+    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  });
+  const [showChatHistory, setShowChatHistory] = useState(false);
+  const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
+  
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -43,6 +60,107 @@ const AiChat = () => {
   useEffect(() => {
     console.log('uploadedFiles state changed:', uploadedFiles);
   }, [uploadedFiles]);
+
+  // Auto-save chat session when messages change
+  useEffect(() => {
+    if (autoSaveEnabled && messages.length > 1 && auth.currentUser) { // Don't save just the welcome message
+      const saveTimeout = setTimeout(() => {
+        console.log('Auto-saving chat session:', currentSessionId, 'with', messages.length, 'messages');
+        saveChatSession();
+      }, 2000); // Auto-save after 2 seconds of inactivity
+      
+      return () => clearTimeout(saveTimeout);
+    }
+  }, [messages, currentSessionId, analysisMode, autoSaveEnabled]);
+
+  // Chat History Functions
+  const saveChatSession = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        console.log('No user logged in, skipping save');
+        return;
+      }
+
+      console.log('Saving chat session:', currentSessionId);
+      const token = await user.getIdToken();
+      const response = await fetch(API_ENDPOINTS.CHAT_HISTORY.SESSIONS, {
+        method: 'POST',
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          sessionId: currentSessionId,
+          analysisMode: analysisMode,
+          messages: messages
+        })
+      });
+
+      if (response.ok) {
+        console.log('Chat session saved successfully');
+      } else {
+        const error = await response.text();
+        console.error('Failed to save chat session:', error);
+      }
+    } catch (err) {
+      console.error('Error saving chat session:', err);
+    }
+  };
+
+  const loadChatSession = async (sessionId) => {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const token = await user.getIdToken();
+      const response = await fetch(API_ENDPOINTS.CHAT_HISTORY.SESSION(sessionId), {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const chatSession = data.chatSession;
+        
+        setCurrentSessionId(sessionId);
+        setAnalysisMode(chatSession.analysisMode);
+        setMessages(chatSession.messages);
+        setUploadedFiles([]); // Reset uploaded files for now
+        setShowChatHistory(false); // Close sidebar on mobile
+      }
+    } catch (err) {
+      console.error('Error loading chat session:', err);
+    }
+  };
+
+  const startNewChat = async () => {
+    // Save current session before starting new one
+    if (messages.length > 1) {
+      console.log('Saving current session before starting new chat');
+      await saveChatSession();
+    }
+
+    const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    console.log('Starting new chat with session ID:', newSessionId);
+    
+    setCurrentSessionId(newSessionId);
+    setMessages([
+      {
+        id: 1,
+        type: 'ai',
+        content: analysisMode === 'prescription' 
+          ? 'Hello! I\'m GeniMeds AI assistant. How can I help you today? You can upload your prescriptions and ask me any questions you have!'
+          : 'Hello! I\'m GeniMeds Lab Analysis assistant. Upload your lab reports and I\'ll help you understand your test results in simple terms!',
+        timestamp: new Date().toLocaleTimeString('en-US', { 
+          hour: '2-digit', 
+          minute: '2-digit',
+          hour12: true 
+        })
+      }
+    ]);
+    setUploadedFiles([]);
+    setShowChatHistory(false);
+  };
 
   // Handle mode change and update welcome message
   const handleModeChange = (newMode) => {
@@ -149,18 +267,20 @@ const AiChat = () => {
     });
     setInputMessage('');
     setIsLoading(true);
+    // Remove uploaded files from input after sending
+    setUploadedFiles([]);
 
     try {
       let response;
       
       // Determine API endpoints based on analysis mode
       const uploadEndpoint = analysisMode === 'prescription' 
-        ? 'http://localhost:5000/api/ai-chat/upload-analyze'
-        : 'http://localhost:5000/api/lab-analysis/upload-analyze';
+        ? 'https://genimeds-backend.onrender.com/api/ai-chat/upload-analyze'
+        : 'https://genimeds-backend.onrender.com/api/lab-analysis/upload-analyze';
       
       const chatEndpoint = analysisMode === 'prescription'
-        ? 'http://localhost:5000/api/ai-chat/chat'
-        : 'http://localhost:5000/api/lab-analysis/chat';
+        ? 'https://genimeds-backend.onrender.com/api/ai-chat/chat'
+        : 'https://genimeds-backend.onrender.com/api/lab-analysis/chat';
       
         if (uploadedFiles.length > 0) {
         console.log(`Processing uploaded files for ${analysisMode} analysis...`);
@@ -180,7 +300,9 @@ const AiChat = () => {
         const fileResponse = await fetch(uploadEndpoint, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            ...(localStorage.getItem('token') && {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            })
           },
           body: formData
         });
@@ -225,7 +347,9 @@ const AiChat = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            ...(localStorage.getItem('token') && {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            })
           },
           body: JSON.stringify({
             message: inputMessage
@@ -290,11 +414,16 @@ const AiChat = () => {
     }
   };
 
+  // Handle keyboard events in textarea
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
+  };
+
+  const clearAllFiles = () => {
+    setUploadedFiles([]);
   };
 
   const triggerFileUpload = () => {
@@ -310,8 +439,42 @@ const AiChat = () => {
     });
   };
 
-  const clearAllFiles = () => {
-    setUploadedFiles([]);
+  // Handle reminder form submission
+  const handleReminderSubmit = async () => {
+    try {
+      // Use local backend for development, production URL for production
+      const baseUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:5000' 
+        : 'https://genimeds-backend.onrender.com';
+      
+      const response = await fetch(`${baseUrl}/api/reminders/set`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reminderFormData)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        const message = result.note 
+          ? `${result.message}\n\nNote: ${result.note}` 
+          : result.message;
+        alert(message);
+        setShowReminderForm(false);
+        setReminderFormData({
+          medicineName: '',
+          datetime: '',
+          email: ''
+        });
+      } else {
+        alert(`Failed to set reminder: ${result.message}`);
+      }
+    } catch (error) {
+      console.error('Error setting reminder:', error);
+      alert('Failed to set reminder. Please try again.');
+    }
   };
 
   return (
@@ -325,11 +488,32 @@ const AiChat = () => {
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-pink-400/20 to-indigo-400/20 rounded-full blur-3xl"></div>
       </div>
 
+      {/* Chat History Sidebar */}
+      <ChatHistorySidebar
+        isOpen={showChatHistory}
+        onClose={() => setShowChatHistory(false)}
+        onSelectSession={loadChatSession}
+        onNewChat={startNewChat}
+        currentSessionId={currentSessionId}
+        analysisMode={analysisMode}
+      />
+
       {/* Main chat container */}
-      <div className="relative z-10 flex flex-col h-screen max-w-4xl mx-auto">
+      <div className="relative z-10 flex flex-col h-[calc(100vh-150px)] max-w-4xl mx-auto mb-28">
         {/* Header */}
         <div className="flex items-center justify-between p-6 backdrop-blur-md bg-white/30 border-b border-white/20">
           <div className="flex items-center space-x-3">
+            {/* Chat History Toggle Button */}
+            <button
+              onClick={() => setShowChatHistory(true)}
+              className="w-10 h-10 bg-white/70 hover:bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-lg shadow-gray-200/50 border border-white/50 group"
+              title="Chat History"
+            >
+              <svg className="w-5 h-5 text-gray-600 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </button>
+            
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -345,14 +529,28 @@ const AiChat = () => {
             </div>
           </div>
           
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-sm text-gray-600">Online</span>
+          <div className="flex items-center space-x-4">
+            {/* New Chat Button */}
+            <button
+              onClick={startNewChat}
+              className="flex items-center space-x-2 px-3 py-2 bg-white/70 hover:bg-white/90 backdrop-blur-md rounded-lg transition-all duration-200 hover:scale-105 shadow-lg shadow-gray-200/50 border border-white/50 group"
+              title="Start New Chat"
+            >
+              <svg className="w-4 h-4 text-gray-600 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              <span className="text-sm text-gray-600 group-hover:text-blue-600 transition-colors hidden sm:block">New Chat</span>
+            </button>
+            
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-sm text-gray-600">Online</span>
+            </div>
           </div>
         </div>
 
         {/* Messages area */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide">
           {messages.map((message) => (
             <div
               key={message.id}
@@ -366,10 +564,26 @@ const AiChat = () => {
                 }`}
               >
                 {message.type === 'ai' ? (
-                  <MarkdownRenderer 
-                    content={message.content} 
-                    className="text-sm leading-relaxed"
-                  />
+                  <div>
+                    <MarkdownRenderer 
+                      content={message.content} 
+                      className="text-sm leading-relaxed"
+                    />
+                    {/* Set Reminder button for AI messages */}
+                    {analysisMode === 'prescription' && (
+                      <div className="mt-3 pt-3 border-t border-gray-200/50">
+                        <button
+                          onClick={() => setShowReminderForm(true)}
+                          className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-lg text-xs font-medium transition-all duration-200 hover:scale-105 shadow-md"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span>Set Reminder</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 ) : (
                   <p className="text-sm leading-relaxed">{message.content}</p>
                 )}
@@ -570,8 +784,123 @@ const AiChat = () => {
           </div>
         </div>
       </div>
+
+      {/* Reminder Popup Modal */}
+      {showReminderForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 scale-100">
+            <div className="p-6">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-800 flex items-center space-x-2">
+                  <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Set Medicine Reminder</span>
+                </h3>
+                <button
+                  onClick={() => setShowReminderForm(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Form */}
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Medicine Name
+                  </label>
+                  <input
+                    type="text"
+                    value={reminderFormData.medicineName}
+                    onChange={(e) => setReminderFormData({...reminderFormData, medicineName: e.target.value})}
+                    placeholder="Enter medicine name"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Date & Time
+                  </label>
+                  <input
+                    type="datetime-local"
+                    value={reminderFormData.datetime}
+                    onChange={(e) => setReminderFormData({...reminderFormData, datetime: e.target.value})}
+                    min={(() => {
+                      const now = new Date();
+                      now.setMinutes(now.getMinutes() + 6); // Add 6 minutes buffer (need 5+ min for reminder)
+                      // Format for datetime-local input (YYYY-MM-DDTHH:MM)
+                      const year = now.getFullYear();
+                      const month = String(now.getMonth() + 1).padStart(2, '0');
+                      const day = String(now.getDate()).padStart(2, '0');
+                      const hours = String(now.getHours()).padStart(2, '0');
+                      const minutes = String(now.getMinutes()).padStart(2, '0');
+                      return `${year}-${month}-${day}T${hours}:${minutes}`;
+                    })()}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    value={reminderFormData.email}
+                    onChange={(e) => setReminderFormData({...reminderFormData, email: e.target.value})}
+                    placeholder="Enter your email"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <p className="text-sm text-blue-700">
+                    <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m-1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    You'll receive an email reminder 5 minutes before the scheduled time. Please schedule at least 6 minutes from now.
+                  </p>
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex space-x-3 mt-6">
+                <button
+                  onClick={() => setShowReminderForm(false)}
+                  className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors duration-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleReminderSubmit}
+                  disabled={!reminderFormData.medicineName || !reminderFormData.datetime || !reminderFormData.email}
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-400 disabled:to-gray-500 text-white rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed"
+                >
+                  Set Reminder
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default AiChat;
+
+/* Add this to your global CSS (e.g., index.css or App.css):
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+*/

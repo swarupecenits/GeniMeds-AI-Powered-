@@ -1,4 +1,4 @@
-const Prescription = require('../models/prescription');
+const Prescription = require('../models/Prescription');
 const { extractMedicinesFromImage } = require('../services/ocrService');
 
 exports.uploadPrescription = async (req, res) => {

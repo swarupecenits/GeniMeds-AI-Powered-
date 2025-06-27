@@ -281,7 +281,7 @@ async function analyzeLabReports(req, res) {
         // Create AI client
         const client = new AzureOpenAI({
             endpoint: endpoint,
-            apiKey: process.env.AZURE_AI_API_KEY,
+            apiKey: process.env.AZURE_AI_API_KEYS,
             deployment: deployment,
             apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2024-12-01-preview"
         });
@@ -350,6 +350,7 @@ async function analyzeLabReports(req, res) {
         
         console.log('Lab report analysis completed successfully');
         res.json(response);
+        console.log(response)
         
     } catch (error) {
         console.error('Error in lab report analysis:', error);
@@ -377,7 +378,7 @@ async function simpleLabReportChat(req, res) {
         // Create AI client
         const client = new AzureOpenAI({
             endpoint: endpoint,
-            apiKey: process.env.AZURE_AI_API_KEY,
+            apiKey: process.env.AZURE_AI_API_KEYS,
             deployment: deployment,
             apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2024-12-01-preview"
         });
