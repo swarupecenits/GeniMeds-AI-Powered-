@@ -350,7 +350,6 @@ async function analyzeLabReports(req, res) {
         
         console.log('Lab report analysis completed successfully');
         res.json(response);
-        console.log(response)
         
     } catch (error) {
         console.error('Error in lab report analysis:', error);
