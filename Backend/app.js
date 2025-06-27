@@ -13,6 +13,8 @@ app.use('/api/lab-analysis', require('./routes/labReportsRoutes')); // New lab r
 app.use('/api/medicines', require('./routes/medicineRoutes'));
 app.use('/api/ai-chat', require('./routes/aichatRoutes'));
 app.use('/api/analyze', require('./routes/analysisRoutes'));
+app.use('/api/reminders', require('./routes/reminderRoutes'));
+app.use('/api/symptom-checker', require('./routes/symptomCheckerRoutes'));
 app.get('/', (req, res) => {
   res.send('✅ GeniMeds backend is running.');
 });
