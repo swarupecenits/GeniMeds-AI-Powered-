@@ -15,6 +15,28 @@ function Navbar() {
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) setUser(JSON.parse(storedUser));
+
+    // Listen for user updates
+    const handleUserUpdate = () => {
+      const updatedUser = localStorage.getItem('user');
+      setUser(updatedUser ? JSON.parse(updatedUser) : null);
+    };
+
+    window.addEventListener('user-updated', handleUserUpdate);
+    return () => window.removeEventListener('user-updated', handleUserUpdate);
+  }, []);
+
+  useEffect(() => {
+    // Also listen to Firebase auth state changes
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (!firebaseUser) {
+        setUser(null);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -30,12 +52,20 @@ function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    window.dispatchEvent(new Event('user-updated'));
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      setUser(null);
+      setDropdownOpen(false);
+      window.dispatchEvent(new Event('user-updated'));
+      navigate('/login');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -197,11 +227,28 @@ function Navbar() {
       {user ? (
         <div className="group relative inline-block">
           <button className="focus:outline-none" onClick={() => setDropdownOpen(!dropdownOpen)}>
-            <img
-              src={user.photoURL || 'https://www.gstatic.com/images/branding/product/1x/avatar_circle_blue_512dp.png'}
-              alt="Profile"
-              className="w-8 h-8 rounded-full object-cover border-2 border-white"
-            />
+            <div className="relative w-8 h-8">
+              {user.photoURL ? (
+                <img
+                  src={user.photoURL}
+                  alt="Profile"
+                  className="w-8 h-8 rounded-full object-cover border-2 border-white"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <div 
+                className={`w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-xs font-bold text-white ${user.photoURL ? 'hidden' : 'flex'}`}
+                style={{ 
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  display: user.photoURL ? 'none' : 'flex'
+                }}
+              >
+                {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email ? user.email.charAt(0).toUpperCase() : 'U'}
+              </div>
+            </div>
           </button>
 
           {dropdownOpen && (
@@ -209,6 +256,13 @@ function Navbar() {
               <div className="px-4 py-2 text-sm text-gray-800 font-semibold">{user.displayName}</div>
               <div className="px-4 text-sm text-gray-500">{user.email}</div>
               <hr className="my-2" />
+              <Link
+                to="/profile"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                onClick={() => setDropdownOpen(false)}
+              >
+                Profile
+              </Link>
               <button
                 className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
                 onClick={handleLogout}

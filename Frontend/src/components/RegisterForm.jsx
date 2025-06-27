@@ -7,6 +7,7 @@ import {
 } from 'firebase/auth';
 import { auth } from '../firebase/firebase';
 import { useNavigate, Link } from 'react-router-dom';
+import { API_ENDPOINTS } from '../config/api';
 
 const RegisterForm = () => {
   const [email, setEmail] = useState('');
@@ -24,7 +25,7 @@ const RegisterForm = () => {
 
       const token = await userCred.user.getIdToken();
 
-      await fetch('http://localhost:5000/api/auth/sync', {
+      await fetch(API_ENDPOINTS.AUTH.SYNC, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -33,7 +34,7 @@ const RegisterForm = () => {
         body: JSON.stringify({ name }),
       });
 
-      alert('Verification email sent. Please check your inbox.');
+      alert('Registration successful! Verification email sent. Please check your inbox and verify your email before logging in.');
       navigate('/login');
     } catch (err) {
       setError(err.message);
@@ -48,22 +49,29 @@ const handleGoogleSignUp = async () => {
 
     const token = await user.getIdToken();
 
-    // 🔐 Store user info and token
-    localStorage.setItem('user', JSON.stringify({
-      displayName: user.displayName,
-      email: user.email,
-      photoURL: user.photoURL
-    }));
-    localStorage.setItem('token', token);
-
-    // 🔁 Notify other components
-    window.dispatchEvent(new Event('user-updated'));
-
-    // 📡 Optional backend sync
-    await fetch('http://localhost:5000/api/auth/sync', {
+    // Sync with backend first
+    const syncResponse = await fetch(API_ENDPOINTS.AUTH.SYNC, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { 
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
     });
+
+    if (syncResponse.ok) {
+      const syncData = await syncResponse.json();
+      
+      // Store user info and token
+      localStorage.setItem('user', JSON.stringify({
+        displayName: syncData.user.name || user.displayName,
+        email: syncData.user.email,
+        photoURL: syncData.user.photoURL || user.photoURL
+      }));
+      localStorage.setItem('token', token);
+
+      // Notify other components
+      window.dispatchEvent(new Event('user-updated'));
+    }
 
     navigate('/');
   } catch (err) {

@@ -8,6 +8,7 @@ import RegisterForm from './components/RegisterForm';
 import AiChat from './pages/AiChat';
 import Contact from './pages/Contact';
 import Medicine from './pages/Medicine';
+import Product from './pages/Product';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import MentalHealth from './pages/MentalHealth';
@@ -33,14 +34,27 @@ function AppContent() {
         <Route
           path="/medicine"
           element={
+            <Medicine />
+          }
+        />
+        <Route
+          path="/product/:id"
+          element={
             <ProtectedRoute>
-              <Medicine />
+              <Product />
             </ProtectedRoute>
           }
         />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route 
+          path="/profile" 
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } 
+        />
         <Route path="/mental-health" element={<MentalHealth />} />
         <Route path="/find-doctors" element={<FindDoctors />} />
         <Route path="/meditation" element={<MeditationZone />} />
