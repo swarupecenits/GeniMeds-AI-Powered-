@@ -140,10 +140,10 @@ function Navbar() {
             </li>
             
             {/* Health Features Dropdown */}
-            <li className="relative md:inline-block" ref={healthDropdownRef}>
+            <li className="relative md:inline-block w-full md:w-auto text-center" ref={healthDropdownRef}>
               <button
                 onClick={() => setHealthDropdownOpen(!healthDropdownOpen)}
-                className="block text-white font-semibold text-center text-lg hover:text-teal-200 transition-colors duration-300 px-4 py-6 md:px-0 md:py-0 flex items-center"
+                className="w-full md:w-auto flex justify-center items-center text-white font-semibold text-center text-lg hover:text-teal-200 transition-colors duration-300 px-4 py-6 md:px-0 md:py-0"
               >
                 Health Tools
                 <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

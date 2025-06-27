@@ -86,11 +86,11 @@ const Profile = () => {
   ];
 
   const userProfile = {
-    name: "Manav Gandhi",
-    email: "manav.gandhi2302@gmail.com",
+    name: "Swarup Chanda",
+    email: "swarupchanda1963@gmail.com",
     phone: "+1 (555) 123-4567",
-    dateOfBirth: "1985-03-15",
-    bloodType: "O+",
+    dateOfBirth: "2003-06-25",
+    bloodType: "B+",
     emergencyContact: "Jane Doe - (555) 987-6543"
   };
 
