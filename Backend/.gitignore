@@ -1,15 +1,9 @@
-AZURE_OPENAI_ENDPOINT=https://genimedsagent-resource.cognitiveservices.azure.com/openai/deployments/gpt-4o-mini/chat/completions?api-version=2025-01-01-preview
-AZURE_AI_API_KEY=EJwSFHfjbyUAqbNEWzyocgnCxQ87aHQ5bZGG588U9TcLfLiXquZpJQQJ99BFACHYHv6XJ3w3AAAAACOGL4T4
-MONGO_URI=mongodb+srv://new_user12:mongodb12rashmi@cluster0.pmmnkdy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-PORT=5000
- 
- 
-# Azure OpenAI Configuration
-AZURE_OPENAI_ENDPOINT=https://t-magandhi-4440-resource.services.ai.azure.com/api/projects/t-magandhi-4440
-AZURE_AI_API_KEY=ESnAJaTpeVJeRqyZFBR67eBu8mCezNBniatMIiqE2qOFg42WXfxuJQQJ99BFACHYHv6XJ3w3AAAAACOGAXJV
-AZURE_OPENAI_API_VERSION=2024-12-01-preview
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
- 
-# Azure Computer Vision Configuration
-VISION_ENDPOINT=<your_vision_endpoint>
-VISION_KEY=<your_vision_key>
+node_modules
+
+.env
+
+package-lock.json
+
+serviceAccountKey.json
+
+firebaseAdmin.js
