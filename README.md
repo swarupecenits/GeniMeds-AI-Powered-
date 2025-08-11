@@ -1,6 +1,37 @@
 # GENIMEDS-AI-POWERED
 
 *Transforming Healthcare with Intelligent, Seamless Solutions*
+# Project  
+**GeniMeds** – AI-powered healthcare web app that analyzes prescriptions/lab reports, checks symptoms with LLMs, sends medicine reminders, and offers wellness tools (mental health, meditation, health tracking, doctor discovery).
+
+## What it does  
+- AI Chat for medical queries with file upload (images/PDF) and analysis mode (prescription vs. lab report)  
+- AI Symptom Checker: ranks top 3 likely conditions with probability, urgency, and care guidance  
+- Email reminders for medicines/appointments via Azure Communication Services  
+- Health modules: Mental Health, Meditation Zone, Health Tracker, Find Doctors, Emergency Contacts  
+- Profile with consolidated health records (lab reports, prescriptions, reminders)  
+
+## Key features delivered  
+- Built end-to-end Symptom Checker (frontend + backend) using Azure OpenAI; structured medical JSON outputs  
+- Lab report and prescription analysis with OCR (images/PDF), pdf-parse, and LLM summarization  
+- Reminder service (backend API + UI) emailing through Azure Communication Services  
+- Modern, responsive UI and navigation: Health Tools dropdown, Home feature showcase, protected routes  
+- New modules with interactive UIs: Mental Health, Find Doctors (search/filter/book), Meditation, Health Tracker, Emergency Contacts  
+- Profile page aggregating health data with clean, card-based design  
+
+## Tech stack  
+- **Frontend:** React 18, Vite, React Router, Tailwind-style utility classes, Firebase Auth (client), modular components  
+- **Backend:** Node.js, Express, MongoDB/Mongoose, Multer (uploads), pdf-parse, Azure OpenAI (GPT-4o-mini), Azure Communication Services, Firebase Admin/JWT middleware  
+- **AI/ML & OCR:** Azure OpenAI for chat/symptom analysis; Azure Computer Vision for OCR (via services)  
+- **Auth & Security:** Firebase Auth integration, JWT, middleware guards (ProtectedRoute, auth middleware)  
+- **Infra & DX:** Environment-based API endpoints, local dev via Vite/Node; Render/Azure-ready configs  
+
+## Additional notes  
+- Launched wellness modules (Mental Health, Meditation, Health Tracker, Find Doctors, Emergency Contacts) with modern, responsive UI and route-based navigation.  
+- Integrated Firebase Auth and protected routes; standardized API access with environment-aware endpoints and robust error handling.  
+
+**Keywords:** React, Vite, Tailwind, Node.js, Express, MongoDB, Azure OpenAI, Azure Communication Services, Firebase Auth, OCR, pdf-parse, Multer, REST APIs, Healthcare AI.
+
 
 ![Last Commit](https://img.shields.io/github/last-commit/swarupecenits/GeniMeds-AI-Powered-?color=blue&label=last%20commit)
 ![JavaScript](https://img.shields.io/badge/javascript-98.7%25-blue)
